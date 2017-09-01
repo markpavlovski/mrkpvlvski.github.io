@@ -63,7 +63,7 @@
                 event.preventDefault();
                 mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
                 mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-                mouse.z = 0;
+                mouse.z = -1.6;
             }
 
             document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -81,14 +81,13 @@
 
             function render() {
             requestAnimationFrame(render);
-            cube.rotation.x += 0.005;
-            cube.rotation.y += 0.01;
-            cube.rotation.z += 0.001;
+            //cube.rotation.x += 0.005;
+            //cube.rotation.y += 0.01;
             
             
-            var vector = new THREE.Vector3(12, 65, 20);
-            var y_axis = new THREE.Vector3(0, -.1, 0);
-            var z_axis = new THREE.Vector3(0, 0, -.1);
+            
+            var y_axis = new THREE.Vector3(0, -1, 0);
+            var z_axis = new THREE.Vector3(0, 0, -1);
             cube.quaternion.setFromUnitVectors(mouse, y_axis.clone().normalize());
             cube.quaternion.setFromUnitVectors(mouse, z_axis.clone().normalize());
 
