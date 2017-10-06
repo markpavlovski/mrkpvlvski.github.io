@@ -5,7 +5,7 @@
   <!-- Basic Page Needs
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>MRKPVLVSKI.</title>
+  <title>Mark Pavlovski</title>
   <meta name="description" content="">
   <meta name="author" content="">
 
@@ -23,9 +23,7 @@
   <link rel="stylesheet" href="css/skeleton.css">
   <link rel="stylesheet" href="css/threejselements.css">
 
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <!--<link rel="icon" type="image/png" href="images/favicon.png">-->
+  
 
   <script src="threejs/three.min.js"></script>
             
@@ -47,13 +45,13 @@
     <div class="row">
     
 
-      <div class=".u-full-width"  style="margin-top: 0%" >          
+      <div class=".u-full-width"  style="margin-top: 0%;" >          
             <script>
             var scene = new THREE.Scene();
             scene.background = new THREE.Color( 0xffffff );
-            var camera = new THREE.PerspectiveCamera(75, window.innerWidth/ window.innerHeight / 0.2, 1, 10000);
+            var camera = new THREE.PerspectiveCamera(75, window.innerWidth/ window.innerHeight / .4, 1, 10000);
             var renderer = new THREE.WebGLRenderer();
-            renderer.setSize(window.innerWidth, window.innerHeight * 0.2);
+            renderer.setSize(window.innerWidth, window.innerHeight * .4);
             
             mouse = new THREE.Vector3()
             
@@ -102,29 +100,15 @@
       </div>
     </div>
 
-
+    <!--
     <div class="row">
       <div class="one-half column" style="margin-top: 200px; padding-top: 20%;  ">
         <h4>Hello, World</h4>
       </div>
     </div>
+    -->
 
-    <div class="row">
-      <div class="one-half column" style="margin-top: 5%">
-        <h5>Recent:</h5>
-         <ul>
-          <li>
-            SnakySnake v3.1 is updated. <a href="snakysnake/index.html">Play it here</a></li>
-          <li>
-            Coming Soon: 
-            <ul>
-              <li><a href="solids.html">Platonic Solids</a>
-              <li>TBD</li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
+    
   </div>
 
 <!-- End Document
