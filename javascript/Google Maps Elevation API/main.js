@@ -24,9 +24,9 @@ function initMap() {
 			myElevation.latlng = results[0].location;
 			myElevation.resolution = results[0].resolution;
 
-			alert("The elevation at this point is " + results[0].elevation + " meters.");
+			console.log("The elevation at this point is " + results[0].elevation + " meters.");
 		} else {
-			alert("Elevation service failed due to: " + status);
+			console.log("Elevation service failed due to: " + status);
 		}
 	});
 }
