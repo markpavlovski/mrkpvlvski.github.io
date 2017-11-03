@@ -6,7 +6,7 @@ class Person {
 	}
 
 	getName() { 
-      console.log("This persons' name is " + this.name)
+      console.log("This person's name is " + this.name)
     }
     setName(name) { 
       this.name = name;
