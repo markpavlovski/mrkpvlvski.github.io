@@ -1,3 +1,6 @@
+
+// jscomplete/repl
+
 class Button extends React.Component {
   
   handleClick = () => {this.props.onClickFunction(this.props.incrementValue)}
