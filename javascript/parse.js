@@ -34,5 +34,6 @@ for (var i = 0; i < startingPositions.length - 1; i++){
 	console.log(links[i])
 }
 
+console.log(htmlString)
 
 //JQuery
