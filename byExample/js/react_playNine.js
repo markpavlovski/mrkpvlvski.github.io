@@ -1,7 +1,5 @@
 // Write JavaScript here and press Ctrl+Enter to execute
 
-//const numberOfStars = Math.floor(Math.random()*9)+1
-
 const Stars = (props) => {
   return (
     <div className = "col-5">
@@ -14,7 +12,7 @@ const Stars = (props) => {
 const Button = (props) => {
   return (
     <div className = "col-2">
-      <button>=</button>
+      <button disabled = {props.selectedNumbers.length===0} className="btn">=</button>
     </div>
   )
 }
@@ -22,7 +20,7 @@ const Answer = (props) => {
   return (
     <div className = "col-5">
       {props.selectedNumbers.map(
-          (number,i) => <span key={i}>{number}</span>
+          (number,i) => <span key={i} onClick = {() => props.unselectNumber(number)}>{number}</span>
         )}
     </div>
   )
@@ -54,30 +52,31 @@ class Game extends React.Component {
   }
   
   selectNumber = (clickedNumber) => { 
-  
       if (this.state.selectedNumbers.indexOf(clickedNumber) >= 0) {
         return;
       }
-      
       this.setState((prevState) => ({
         selectedNumbers: prevState.selectedNumbers.concat(clickedNumber)
       }))
-      
-  
-
+  }
+  unselectNumber = (clickedNumber) => { 
+      this.setState((prevState) => ({
+        selectedNumbers: prevState.selectedNumbers.filter(number => number !== clickedNumber)
+      }))
   }
   
   render(){
+    const {selectedNumbers, randomNumberOfStars} = this.state
     return(
       <div className = "container">
         <h3>Play Nine</h3>
         <div className = "row">
-          <Stars numberOfStars = {this.state.randomNumberOfStars}/>
-          <Button />
-          <Answer selectedNumbers = {this.state.selectedNumbers}/>
+          <Stars numberOfStars = {randomNumberOfStars}/>
+          <Button selectedNumbers = {selectedNumbers} />
+          <Answer selectedNumbers = {selectedNumbers} unselectNumber ={this.unselectNumber}/>
         </div>
         <br />
-        <Numbers selectedNumbers = {this.state.selectedNumbers} selectNumber ={this.selectNumber}/>
+        <Numbers selectedNumbers = {selectedNumbers} selectNumber ={this.selectNumber} />
       </div>
     )
   }
