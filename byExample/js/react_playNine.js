@@ -1,14 +1,13 @@
-// jscompplete.com/repl
+// Write JavaScript here and press Ctrl+Enter to execute
 
-const 
+//const numberOfStars = Math.floor(Math.random()*9)+1
 
 const Stars = (props) => {
   return (
     <div className = "col-5">
-        <li className = "fa fa-star"></li>
-        <li className = "fa fa-star"></li>
-        <li className = "fa fa-star"></li>
-        <li className = "fa fa-star"></li>
+          {_.range(props.numberOfStars).map(
+            (i) =>  <li key={i} className = "fa fa-star"></li>
+          )}
     </div>
   )
 }
@@ -22,36 +21,63 @@ const Button = (props) => {
 const Answer = (props) => {
   return (
     <div className = "col-5">
-      ...
+      {props.selectedNumbers.map(
+          (number,i) => <span key={i}>{number}</span>
+        )}
     </div>
   )
 }
 
 const Numbers = (props) => {
+  const numberClassName = (number)=>{
+    if (props.selectedNumbers.indexOf(number) >= 0) {
+      return "selected"
+    }
+  }
   return(
     <div className = "card text-center">
       <div>
-        <span className = "selected">1</span>
-        <span className = "used">2</span>
-        <span>3</span>
+        {Numbers.list.map(
+          (number,i) => <span key={i} className={numberClassName(number)} onClick={() => props.selectNumber(number)}>{number}</span>
+        )}
       </div>
     </div>
   )
 }
+Numbers.list = _.range(1,10);
 
 
 class Game extends React.Component {
+  state = {
+    selectedNumbers: [2,4,6],
+    randomNumberOfStars: Math.floor(Math.random()*9)+1
+  }
+  
+  selectNumber = (clickedNumber) => { 
+  
+      if (this.state.selectedNumbers.indexOf(clickedNumber) >= 0) {
+        return;
+      }
+      
+      this.setState((prevState) => ({
+        selectedNumbers: prevState.selectedNumbers.concat(clickedNumber)
+      }))
+      
+  
+
+  }
+  
   render(){
     return(
       <div className = "container">
         <h3>Play Nine</h3>
         <div className = "row">
-          <Stars />
+          <Stars numberOfStars = {this.state.randomNumberOfStars}/>
           <Button />
-          <Answer />
+          <Answer selectedNumbers = {this.state.selectedNumbers}/>
         </div>
         <br />
-        <Numbers />
+        <Numbers selectedNumbers = {this.state.selectedNumbers} selectNumber ={this.selectNumber}/>
       </div>
     )
   }
