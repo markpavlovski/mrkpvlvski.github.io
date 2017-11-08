@@ -1,3 +1,5 @@
+// Write JavaScript here and press Ctrl+Enter to execute
+
 const Stars = (props) => {
   return (
     <div className = "col-5">
@@ -7,6 +9,25 @@ const Stars = (props) => {
     </div>
   )
 }
+
+var possibleCombinationSum = function(arr, n) {
+  if (arr.indexOf(n) >= 0) { return true; }
+  if (arr[0] > n) { return false; }
+  if (arr[arr.length - 1] > n) {
+    arr.pop();
+    return possibleCombinationSum(arr, n);
+  }
+  var listSize = arr.length, combinationsCount = (1 << listSize)
+  for (var i = 1; i < combinationsCount ; i++ ) {
+    var combinationSum = 0;
+    for (var j=0 ; j < listSize ; j++) {
+      if (i & (1 << j)) { combinationSum += arr[j]; }
+    }
+    if (n === combinationSum) { return true; }
+  }
+  return false;
+};
+
 const Button = (props) => {
   let button
   switch (props.answerIsCorrect){
@@ -29,8 +50,8 @@ const Button = (props) => {
     <div className = "col-2 text-center">
       {button}
       <br /><br />
-      <button className = "btn btn-warning btn-sm" onClick = {props.redraw}>
-          <i  className="fa fa-refresh"></i>
+      <button className = "btn btn-warning btn-sm" onClick = {props.redraw} disabled = {props.redraws === 0}>
+          <i  className="fa fa-refresh fa-inverse">{props.redraws}</i>
       </button>
     </div>
   )
@@ -66,13 +87,34 @@ const Numbers = (props) => {
 }
 Numbers.list = _.range(1,10);
 
+const DoneFrame = (props) => {
+  return (
+    <div className="text-center">
+      <br />
+      <h2>{props.doneStatus}</h2>
+      <button className = "btn btn-secondary" onClick = {props.resetGame}>Play Again</button>
+    </div>
+  )
+}
+
 
 class Game extends React.Component {
-  state = {
+  
+  static randomNumber = () => Math.floor(Math.random()*9)+1
+  static initialState = () => ({
     selectedNumbers: [],
     usedNumbers: [],
-    randomNumberOfStars: Math.floor(Math.random()*9)+1,
-    answerIsCorrect: null
+    randomNumberOfStars: Game.randomNumber(),
+    answerIsCorrect: null,
+    redraws: 10,
+    doneStatus: null
+  })
+  
+
+  state = Game.initialState();
+  
+  resetGame = () => {
+    this.setState(Game.initialState())
   }
   
   checkAnswer = ()=>{
@@ -89,8 +131,9 @@ class Game extends React.Component {
         usedNumbers: prevState.usedNumbers.concat(prevState.selectedNumbers),
         selectedNumbers: [],
         answerIsCorrect: null,
-        randomNumberOfStars: Math.floor(Math.random()*9)+1
-      })
+        randomNumberOfStars: Game.randomNumber()
+      }),
+      this.updateDoneStatus
     )
   }
   
@@ -110,26 +153,50 @@ class Game extends React.Component {
         selectedNumbers: prevState.selectedNumbers.filter(number => number !== clickedNumber)
       }))
   }
-  redraw = () => {
-    this.setState({
-      randomNumberOfStars: Math.floor(Math.random()*9)+1,
+  redraw = () => { 
+    if (this.state.redraws === 0){return}
+    this.setState( prevState => ({
+      randomNumberOfStars: Game.randomNumber(),
       answerIsCorect: null,
-      selectedNumbers: []
-    })
+      selectedNumbers: [],
+      redraws: prevState.redraws - 1
+    }),
+      this.updateDoneStatus)
   }
   
+  possibleSolutions = ({randomNumberOfStars, usedNumbers}) => {
+    const possibleNumbers = _.range(1,10).filter(number => usedNumbers.indexOf(number) === -1)  
+    return possibleCombinationSum(possibleNumbers, randomNumberOfStars)
+  }
+  updateDoneStatus = () => {
+    this.setState(prevState => {
+      if (prevState.usedNumbers.length === 9) {
+        return { doneStatus: 'Done. Nice!' };
+      }
+      if (prevState.redraws === 0 && !this.possibleSolutions(prevState)) {
+        return { doneStatus: 'Game Over!' };
+      }
+    });
+  }
+ 
+  
   render(){
-    const {selectedNumbers, randomNumberOfStars, answerIsCorrect, usedNumbers} = this.state
+    const {selectedNumbers, randomNumberOfStars, answerIsCorrect, usedNumbers, redraws, doneStatus} = this.state
     return(
       <div className = "container">
         <h3>Play Nine</h3>
         <div className = "row">
           <Stars numberOfStars = {randomNumberOfStars}/>
-          <Button selectedNumbers = {selectedNumbers} checkAnswer = {this.checkAnswer} answerIsCorrect = {answerIsCorrect} acceptAnswer = {this.acceptAnswer} redraw = {this.redraw} />
+          <Button selectedNumbers = {selectedNumbers} checkAnswer = {this.checkAnswer} answerIsCorrect = {answerIsCorrect} acceptAnswer = {this.acceptAnswer} redraw = {this.redraw} redraws = {redraws} />
           <Answer selectedNumbers = {selectedNumbers} unselectNumber ={this.unselectNumber}/>
         </div>
         <br />
-        <Numbers selectedNumbers = {selectedNumbers} selectNumber ={this.selectNumber} usedNumbers ={usedNumbers} />
+        {doneStatus ?
+           <DoneFrame doneStatus = {doneStatus} resetGame = {this.resetGame}/> :
+           <Numbers selectedNumbers = {selectedNumbers} selectNumber ={this.selectNumber} usedNumbers ={usedNumbers} />
+          }
+        
+       
       </div>
     )
   }

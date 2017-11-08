@@ -1,37 +1,8 @@
-/*
-* Skeleton V2.0.4
-* Copyright 2014, Dave Gamache
-* www.getskeleton.com
-* Free to use under the MIT license.
-* http://www.opensource.org/licenses/mit-license.php
-* 12/29/2014
-*/
-
-
-/* Table of contents
-––––––––––––––––––––––––––––––––––––––––––––––––––
-- Grid
-- Base Styles
-- Typography
-- Links
-- Buttons
-- Forms
-- Lists
-- Code
-- Tables
-- Spacing
-- Utilities
-- Clearing
-- Media Queries
-*/
-
-
-/* Grid
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
+﻿
 canvas {
     background-color: #000;
     border: 0px solid black;
-    margin-top: 50px;
+    margin-bottom: 1.5em;
     padding: 0px;
     position: absolute; /* fixed or static */
     top: 0px;
