@@ -37,7 +37,7 @@
   <div class="container">
 
     <div class="row">
-    
+
   	<div id = "canvas"></div>
 
     </div>
@@ -48,14 +48,18 @@
 
       <div class=".u-full-width"  style="margin-top: 0%;" >          
             <script>
-	            
+
+            	var maxHeight = 300;
+	            var height = Math.min(window.innerHeight, 300);
 	            var mouse = new THREE.Vector3()
 	            var scene = new THREE.Scene();
 	            scene.background = new THREE.Color( 0x99ffff );
-	            var camera = new THREE.PerspectiveCamera(75, window.innerWidth/ window.innerHeight / .4, 1, 10000);
+	            var camera = new THREE.PerspectiveCamera(75, window.innerWidth/ height / .4, 1, 10000);
+	            camera.position.z = 750;  
 	            var renderer = new THREE.WebGLRenderer();
 
-	            renderer.setSize(window.innerWidth, window.innerHeight *.4);
+
+	            renderer.setSize(window.innerWidth, height *.4);
 	            
 	            
 
@@ -78,7 +82,7 @@
 	            var material = new THREE.MeshBasicMaterial({color: 0x1EAEDB, wireframe: true});
 	            var cube = new THREE.Mesh(geometry, material);
 	            scene.add(cube);
-	            camera.position.z = 700;        
+	                  
 
 	            var y_axis = new THREE.Vector3(0, -1, 0);
 		        var z_axis = new THREE.Vector3(0, 0, -1);
@@ -90,10 +94,10 @@
 		            cube.quaternion.setFromUnitVectors(mouse, y_axis.clone().normalize());
 		            cube.quaternion.setFromUnitVectors(mouse, z_axis.clone().normalize());
 
-		            
-		            camera.aspect = window.innerWidth / window.innerHeight / .4;
+		            height = Math.min(window.innerHeight, maxHeight);
+		            camera.aspect = window.innerWidth / height / .4;
 		            camera.updateProjectionMatrix();
-		            renderer.setSize(window.innerWidth, window.innerHeight*.4);
+		            renderer.setSize(window.innerWidth, height*.4);
 
 		            renderer.render(scene, camera);
 		         
