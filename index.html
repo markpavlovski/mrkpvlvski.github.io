@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/skeleton.css">
   <link rel="stylesheet" href="css/threejselements.css">
+  <link rel="stylesheet" href="fontawesome/css/font-awesome.min.css">
 
   
 
@@ -37,76 +38,107 @@
   <div class="container">
 
     <div class="row">
-  <div id = "canvas"></div>
-
+	  	<div id = "canvas"></div>
     </div>
 
   
-    <div class="row">
+    <div class="row" id='headerRow'>
+    	<div class=".u-full-width">          
+	      <script>
+
+	      	var minHeight = 100;
+	      	var maxHeight = 600;
+	      	var headerOffset = 40;
+	      	var pct = .3;
+
+	      	function setHeight(actualheight){
+	      		if (actualheight < minHeight/.3) {
+		      		document.getElementById("headerRow").style.height = headerOffset + "px";
+		      		return 0;
+		      	}else{
+		      		document.getElementById("headerRow").style.height = Math.min(window.innerHeight* pct, maxHeight) + headerOffset + "px";
+		      		return Math.min(actualheight, maxHeight/pct);
+	      		}
+	      	}
+	      	var height = setHeight(window.innerHeight);
+
+	        
+	        
+
+	        var mouse = new THREE.Vector3()
+	        var scene = new THREE.Scene();
+	        scene.background = new THREE.Color( 0xffffff );
+	        
+	        var camera = new THREE.PerspectiveCamera(75, window.innerWidth/ height / pct, 1, 10000);
+	        camera.position.z = 750;  
+	        var renderer = new THREE.WebGLRenderer();
+
+
+	        renderer.setSize(window.innerWidth, height *pct);
+	        
+	        
+
+
+	        function onDocumentMouseMove(event) {
+	            event.preventDefault();
+	            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+	            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+	            mouse.z = -1.6;
+	        }
+
+	        document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+
+	        containerThree = document.getElementById( 'canvas' );
+	        document.body.appendChild( containerThree );
+
+	        containerThree.appendChild( renderer.domElement );
+	        var geometry = new THREE.BoxGeometry(500 , 500 , 500 , 1, 1, 1);
+	        var material = new THREE.MeshBasicMaterial({color: 0x1EAEDB, wireframe: true});
+	        var cube = new THREE.Mesh(geometry, material);
+	        scene.add(cube);
+	              
+
+	        var y_axis = new THREE.Vector3(0, -1, 0);
+	      var z_axis = new THREE.Vector3(0, 0, -1);
+	          
+	        function render() {
+	          requestAnimationFrame(render);	            		            
+	          
+	          
+	          cube.quaternion.setFromUnitVectors(mouse, y_axis.clone().normalize());
+	          cube.quaternion.setFromUnitVectors(mouse, z_axis.clone().normalize());
+
+	          height = setHeight(window.innerHeight);
+	          camera.aspect = window.innerWidth / height / pct;
+	          camera.updateProjectionMatrix();
+	          renderer.setSize(window.innerWidth, height*pct);
+
+	          renderer.render(scene, camera);
+	       
+	        };
+
+	        render();
+	      </script>
+      </div>
+    </div>
+
     
-
-      <div class=".u-full-width"  style="margin-top: 0%;" >          
-            <script>
-            var scene = new THREE.Scene();
-            scene.background = new THREE.Color( 0xffffff );
-            var camera = new THREE.PerspectiveCamera(75, window.innerWidth/ window.innerHeight / .4, 1, 10000);
-            var renderer = new THREE.WebGLRenderer();
-            renderer.setSize(window.innerWidth, window.innerHeight * .4);
-            
-            mouse = new THREE.Vector3()
-            
-
-
-            function onDocumentMouseMove(event) {
-                event.preventDefault();
-                mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-                mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-                mouse.z = -1.6;
-            }
-
-            document.addEventListener('mousemove', onDocumentMouseMove, false);
-
-
-            containerThree = document.getElementById( 'canvas' );
-            document.body.appendChild( containerThree );
-
-            containerThree.appendChild( renderer.domElement );
-            var geometry = new THREE.BoxGeometry(500 , 500 , 500 , 1, 1, 1);
-            var material = new THREE.MeshBasicMaterial({color: 0x1EAEDB, wireframe: true});
-            var cube = new THREE.Mesh(geometry, material);
-            scene.add(cube);
-            camera.position.z = 700;        
-
-            function render() {
-            requestAnimationFrame(render);
-            //cube.rotation.x += 0.005;
-            //cube.rotation.y += 0.01;
-            
-            
-            
-            var y_axis = new THREE.Vector3(0, -1, 0);
-            var z_axis = new THREE.Vector3(0, 0, -1);
-            cube.quaternion.setFromUnitVectors(mouse, y_axis.clone().normalize());
-            cube.quaternion.setFromUnitVectors(mouse, z_axis.clone().normalize());
-
-            renderer.render(scene, camera);
-            };
-
-            render();
-
-
-            </script>
-
-      </div>
-    </div>
-
-    <!--
     <div class="row">
-      <div class="one-half column" style="margin-top: 200px; padding-top: 20%;  ">
-        <h4>Hello, World</h4>
+      <div class="one-half column" style="margin-top: 0; padding-top: 0%;  ">
+        <h4>Hello, World!</h4>
+      </div>
+      <div class="one-half column" style="margin-top: 0; padding-top: 0%;  ">  
       </div>
     </div>
-    -->
+
+    <div class="row">
+      <h6><a href = "https://twitter.com/mrkpvlvski"><i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i></a></h6>
+    </div>
+
+
+    
+    
 
     
   </div>
