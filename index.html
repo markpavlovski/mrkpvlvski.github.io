@@ -48,7 +48,7 @@
 	      	var minHeight = 100;
 	      	var maxHeight = 600;
 	      	var headerOffset = 40;
-	      	var pct = .3;
+	      	var pct = .4;
 	      	function setHeight(actualheight){
 	      		if (actualheight < minHeight/.3) {
 		      		document.getElementById("headerRow").style.height = headerOffset + "px";
@@ -65,8 +65,9 @@
 	        var scene = new THREE.Scene();
 	        scene.background = new THREE.Color( 0xffffff );
 	        
-	        var camera = new THREE.PerspectiveCamera(75, window.innerWidth/ height / pct, 1, 10000);
-	        camera.position.z = 750;  
+	        var camera = new THREE.PerspectiveCamera(85, window.innerWidth/ height / pct, 1, 10000);
+	        camera.position.z = 850;  
+	        camera.position.y = 150;
 	        var renderer = new THREE.WebGLRenderer();
 	        renderer.setSize(window.innerWidth, height *pct);
 	        
@@ -75,14 +76,48 @@
 	            event.preventDefault();
 	            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
 	            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-	            mouse.z = -1.6;
+	            mouse.z = -.8;
 	        }
 	        document.addEventListener('mousemove', onDocumentMouseMove, false);
 	        containerThree = document.getElementById( 'canvas' );
 	        document.body.appendChild( containerThree );
 	        containerThree.appendChild( renderer.domElement );
-	        var geometry = new THREE.BoxGeometry(500 , 500 , 500 , 1, 1, 1);
+
+	        var geometry;
+	        var cube;
 	        var material = new THREE.MeshBasicMaterial({color: 0x1EAEDB, wireframe: true});
+	        function generateGeometry(){
+	        	scene.remove(cube);
+	        	let index = Math.floor(Math.random()*5)+1;
+		        switch(index) {
+		        	case 1:
+		        		geometry = new THREE.TetrahedronGeometry(400);
+		        		break;
+		        	case 2:
+		        		geometry = new THREE.BoxGeometry(500 , 500 , 500 , 1, 1, 1);
+		        		break;
+		        	case 3:
+		        		geometry = new THREE.OctahedronGeometry(400);
+		        		break;
+		        	case 4:
+		        		geometry = new THREE.DodecahedronGeometry(400);
+		        		break;
+		        	case 5:
+		        		geometry = new THREE.IcosahedronGeometry(400);
+		        		break;
+	    			default:
+	    				geometry = new THREE.BoxGeometry(500 , 500 , 500 , 1, 1, 1);
+		        }
+		    	cube = new THREE.Mesh(geometry, material);
+	    	}
+	    	generateGeometry();
+	    	document.getElementById("canvas").addEventListener("click", function(){ generateGeometry() });
+	    	 	
+			
+
+
+
+
 	        var cube = new THREE.Mesh(geometry, material);
 	        scene.add(cube);
 	              
@@ -90,9 +125,12 @@
 	      var z_axis = new THREE.Vector3(0, 0, -1);
 	          
 	        function render() {
-	          requestAnimationFrame(render);	            		            
-	          
-	          
+
+	          requestAnimationFrame(render);
+
+	          scene.remove(cube);
+	          cube = new THREE.Mesh(geometry, material);
+	          scene.add(cube);
 	          cube.quaternion.setFromUnitVectors(mouse, y_axis.clone().normalize());
 	          cube.quaternion.setFromUnitVectors(mouse, z_axis.clone().normalize());
 	          height = setHeight(window.innerHeight);
@@ -117,7 +155,7 @@
     </div>
 
     <div class="row"><br />
-    <p>Messenger bag keytar health goth cliche YOLO live-edge swag umami yr chambray. Crucifix retro tilde palo santo kinfolk umami meditation heirloom sriracha flannel poke street art microdosing keffiyeh echo park. Letterpress distillery snackwave post-ironic. Humblebrag skateboard cloud bread master cleanse chia squid. Raw denim bicycle rights letterpress cliche, snackwave ugh godard air plant heirloom kale chips umami offal. Everyday carry next level activated charcoal, polaroid single-origin coffee skateboard authentic leggings cornhole bicycle rights vape tousled tattooed flannel. </p>
+    <p >Messenger bag keytar health goth cliche YOLO live-edge swag umami yr chambray. Crucifix retro tilde palo santo kinfolk umami meditation heirloom sriracha flannel poke street art microdosing keffiyeh echo park. Letterpress distillery snackwave post-ironic. Humblebrag skateboard cloud bread master cleanse chia squid. Raw denim bicycle rights letterpress cliche, snackwave ugh godard air plant heirloom kale chips umami offal. Everyday carry next level activated charcoal, polaroid single-origin coffee skateboard authentic leggings cornhole bicycle rights vape tousled tattooed flannel. </p>
 
 
 	<p>Narwhal shabby chic small batch affogato sriracha. Succulents blue bottle fashion axe trust fund photo booth cred, kickstarter prism poutine gentrify selfies food truck. Cloud bread slow-carb flannel seitan snackwave. Organic semiotics letterpress salvia chia, kickstarter coloring book cornhole lo-fi ennui mumblecore lumbersexual. Semiotics poke viral cardigan hella kombucha. Coloring book lumbersexual messenger bag tumeric shoreditch tbh. 90's messenger bag master cleanse sustainable vinyl mumblecore. Art party drinking vinegar kale chips synth selvage direct trade farm-to-table. Kinfolk celiac air plant, narwhal cardigan leggings taiyaki vape sartorial pok pok swag.</p>
