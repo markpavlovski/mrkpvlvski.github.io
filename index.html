@@ -61,6 +61,7 @@
 	      		}
 	      	}
 	      	var height = setHeight(window.innerHeight);
+	      	var width = window.innerWidth - 20;
 
 	        
 	        
@@ -69,12 +70,12 @@
 	        var scene = new THREE.Scene();
 	        scene.background = new THREE.Color( 0xffffff );
 	        
-	        var camera = new THREE.PerspectiveCamera(75, window.innerWidth/ height / pct, 1, 10000);
+	        var camera = new THREE.PerspectiveCamera(75, width/ height / pct, 1, 10000);
 	        camera.position.z = 750;  
 	        var renderer = new THREE.WebGLRenderer();
 
 
-	        renderer.setSize(window.innerWidth, height *pct);
+	        renderer.setSize(width, height *pct);
 	        
 	        
 
@@ -110,9 +111,9 @@
 	          cube.quaternion.setFromUnitVectors(mouse, z_axis.clone().normalize());
 
 	          height = setHeight(window.innerHeight);
-	          camera.aspect = window.innerWidth / height / pct;
+	          camera.aspect = width/ height / pct;
 	          camera.updateProjectionMatrix();
-	          renderer.setSize(window.innerWidth, height*pct);
+	          renderer.setSize(width, height*pct);
 
 	          renderer.render(scene, camera);
 	       
@@ -133,7 +134,10 @@
     </div>
 
     <div class="row">
-      <h6><a href = "https://twitter.com/mrkpvlvski"><i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i></a></h6>
+      <h6>
+      <br /><br /><br /><br /><br /><br /><br /><br />
+      <a href = "https://twitter.com/mrkpvlvski"><i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i></a>
+      </h6>
     </div>
 
 
