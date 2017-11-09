@@ -30,7 +30,7 @@
             
 
 </head>
-<body>
+<body  style="overflow-x: hidden;">
 
 
   <!-- Primary Page Layout
@@ -45,12 +45,10 @@
     <div class="row" id='headerRow'>
     	<div class=".u-full-width">          
 	      <script>
-
 	      	var minHeight = 100;
 	      	var maxHeight = 600;
 	      	var headerOffset = 40;
 	      	var pct = .3;
-
 	      	function setHeight(actualheight){
 	      		if (actualheight < minHeight/.3) {
 		      		document.getElementById("headerRow").style.height = headerOffset + "px";
@@ -61,45 +59,33 @@
 	      		}
 	      	}
 	      	var height = setHeight(window.innerHeight);
-	      	var width = window.innerWidth - 20;
-
 	        
 	        
-
 	        var mouse = new THREE.Vector3()
 	        var scene = new THREE.Scene();
 	        scene.background = new THREE.Color( 0xffffff );
 	        
-	        var camera = new THREE.PerspectiveCamera(75, width/ height / pct, 1, 10000);
+	        var camera = new THREE.PerspectiveCamera(75, window.innerWidth/ height / pct, 1, 10000);
 	        camera.position.z = 750;  
 	        var renderer = new THREE.WebGLRenderer();
-
-
-	        renderer.setSize(width, height *pct);
+	        renderer.setSize(window.innerWidth, height *pct);
 	        
 	        
-
-
 	        function onDocumentMouseMove(event) {
 	            event.preventDefault();
 	            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
 	            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 	            mouse.z = -1.6;
 	        }
-
 	        document.addEventListener('mousemove', onDocumentMouseMove, false);
-
-
 	        containerThree = document.getElementById( 'canvas' );
 	        document.body.appendChild( containerThree );
-
 	        containerThree.appendChild( renderer.domElement );
 	        var geometry = new THREE.BoxGeometry(500 , 500 , 500 , 1, 1, 1);
 	        var material = new THREE.MeshBasicMaterial({color: 0x1EAEDB, wireframe: true});
 	        var cube = new THREE.Mesh(geometry, material);
 	        scene.add(cube);
 	              
-
 	        var y_axis = new THREE.Vector3(0, -1, 0);
 	      var z_axis = new THREE.Vector3(0, 0, -1);
 	          
@@ -109,16 +95,13 @@
 	          
 	          cube.quaternion.setFromUnitVectors(mouse, y_axis.clone().normalize());
 	          cube.quaternion.setFromUnitVectors(mouse, z_axis.clone().normalize());
-
 	          height = setHeight(window.innerHeight);
-	          camera.aspect = width/ height / pct;
+	          camera.aspect = window.innerWidth / height / pct;
 	          camera.updateProjectionMatrix();
-	          renderer.setSize(width, height*pct);
-
+	          renderer.setSize(window.innerWidth, height*pct);
 	          renderer.render(scene, camera);
 	       
 	        };
-
 	        render();
 	      </script>
       </div>
@@ -133,11 +116,22 @@
       </div>
     </div>
 
-    <div class="row">
-      <h6>
-      <br /><br /><br /><br /><br /><br /><br /><br />
-      <a href = "https://twitter.com/mrkpvlvski"><i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i></a>
-      </h6>
+    <div class="row"><br />
+    <p>Messenger bag keytar health goth cliche YOLO live-edge swag umami yr chambray. Crucifix retro tilde palo santo kinfolk umami meditation heirloom sriracha flannel poke street art microdosing keffiyeh echo park. Letterpress distillery snackwave post-ironic. Humblebrag skateboard cloud bread master cleanse chia squid. Raw denim bicycle rights letterpress cliche, snackwave ugh godard air plant heirloom kale chips umami offal. Everyday carry next level activated charcoal, polaroid single-origin coffee skateboard authentic leggings cornhole bicycle rights vape tousled tattooed flannel. </p>
+
+
+	<p>Narwhal shabby chic small batch affogato sriracha. Succulents blue bottle fashion axe trust fund photo booth cred, kickstarter prism poutine gentrify selfies food truck. Cloud bread slow-carb flannel seitan snackwave. Organic semiotics letterpress salvia chia, kickstarter coloring book cornhole lo-fi ennui mumblecore lumbersexual. Semiotics poke viral cardigan hella kombucha. Coloring book lumbersexual messenger bag tumeric shoreditch tbh. 90's messenger bag master cleanse sustainable vinyl mumblecore. Art party drinking vinegar kale chips synth selvage direct trade farm-to-table. Kinfolk celiac air plant, narwhal cardigan leggings taiyaki vape sartorial pok pok swag.</p>
+
+	<p>Fixie hell of pabst normcore vice put a bird on it tilde bespoke crucifix echo park edison bulb dreamcatcher knausgaard. Lyft pok pok keytar tousled. Banh mi cardigan offal hashtag unicorn. Jianbing tousled tbh forage next level copper mug. Live-edge chillwave freegan, actually kogi pug keytar chartreuse vexillologist pok pok. Fixie blog small batch cred. Kitsch street art put a bird on it chillwave church-key pok pok cliche tbh typewriter 90's gastropub. Subway tile food truck next level prism vice biodiesel. XOXO selfies messenger bag.</p>
+
+	<p>Austin neutra migas aesthetic yuccie lyft beard tofu man bun woke fixie franzen succulents. Sustainable roof party keytar hoodie yr af. Scenester hoodie banjo, meh YOLO butcher affogato skateboard health goth VHS. XOXO activated charcoal post-ironic hella, cloud bread pitchfork flexitarian offal small batch PBR&B irony kogi sriracha pok pok kinfolk.</p>
+
+	<p>Small batch fashion axe skateboard banjo brooklyn. Cornhole jianbing tilde cronut viral unicorn af tumeric meditation vinyl deep v knausgaard. Listicle tilde chillwave snackwave 8-bit chicharrones try-hard photo booth cliche keytar sartorial. Distillery try-hard schlitz, whatever swag man bun gochujang twee humblebrag affogato pork belly you probably haven't heard of them. </p>
+	
+	<br /><br />
+	You win! <br /><br />
+    	
+     <h6><a href = "https://twitter.com/mrkpvlvski"><i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i></a></h6>
     </div>
 
 
