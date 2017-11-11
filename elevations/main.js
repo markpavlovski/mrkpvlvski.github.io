@@ -1,6 +1,23 @@
 //Latitude is N-S, longitude i E-W
 
 
+function Shade(pct) {
+
+	pct = 1 - pct
+	rgbComponent = Math.round(255 * pct)
+	var hexComponent
+	if (rgbComponent < 16 ){
+		hexComponent = "0" + rgbComponent.toString(16)
+	} else {
+		hexComponent = rgbComponent.toString(16)
+	}
+
+	hex = "#" + hexComponent + hexComponent + hexComponent
+	return hex
+}
+
+
+
 var myElevation = {
 	elevation: 0,
 	status : "",
@@ -9,13 +26,15 @@ var myElevation = {
 };
 
 
-var inputloc = prompt("Please enter coordinates:", "47.611038, -122.311168");
+var inputloc = prompt("Please enter coordinates:", "47.659803, -122.353963");
+var scale = prompt("Please input scale:", 1);
+
 var loc = inputloc.split(", ");
 
 
 // Inputs:
-radius = 5;
-scale = 1; 
+radius = 10;
+//scale = .5; 
 
 
 resolutionWidth = 0.001265; // Fremont city block length North-South
@@ -55,33 +74,8 @@ var elevator;
 elevations = [];
 vertices = [];
 
-// function initMap() {
-// 	elevator = new google.maps.ElevationService;
-// 	for (var i = 0; i < sampleSize; i++ ){
-// 		elevator.getElevationForLocations({
-// 		    'locations': [requestInputs[i]]
-// 		}, function(results, status) {
-// 			if (status === 'OK') {
-// 				myElevation.elevation  = results[0].elevation;
-// 				myElevation.status = status;
-// 				myElevation.latlng = results[0].location;
-// 				myElevation.resolution = results[0].resolution;
-
-// 				console.log("The elevation at this point is " + results[0].elevation + " meters.");
-// 				elevations.push(results[0].elevation)
-// 				vertices.push({
-// 					lat: requestInputs[vertices.length-1].lat,
-// 					lng: requestInputs[vertices.length-1].lng,
-// 					elv: results[0].elevation
-// 				})
-
-// 			} else {
-// 				console.log("Elevation service failed due to: " + status);
-// 			}
-// 		});
-// 	}
-// }
-
+container = document.getElementById('container');
+container.innerHTML = ""
 
 
 function initMap() {
@@ -93,8 +87,17 @@ function initMap() {
 				for (var i = 0; i < sampleSize; i++){
 					console.log("The point is " + requestInputs[i].lat + ",  " + requestInputs[i].lng);
 					console.log("The elevation at this point is " + results[i].elevation + " meters.");
+					elevations.push(results[i].elevation)
 					vertices.push([requestInputs[i].lng,requestInputs[i].lat,results[i].elevation])
+					container.innerHTML += "<div class='cell' id='cell" + i +"''>"+Math.round(results[i].elevation)+"</div>";
 				}
+				maxElv = Math.max.apply(null, elevations)
+				minElv = Math.min.apply(null, elevations)
+				for (var i = 0; i < sampleSize; i++){
+					document.getElementById('cell' + i).style.background = Shade( (elevations[i] - minElv) / (maxElv - minElv))
+				}
+				document.getElementById('cell'+(sampleSize-1)/2).style.color = '#ccffff';
+
 			} else {
 				console.log("Elevation service failed due to: " + status);
 			}
