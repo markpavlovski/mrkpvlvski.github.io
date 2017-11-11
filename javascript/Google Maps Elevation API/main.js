@@ -53,7 +53,7 @@ var elevator;
 
 
 elevations = [];
-vertices = [sampleSize];
+vertices = [];
 
 // function initMap() {
 // 	elevator = new google.maps.ElevationService;
@@ -86,7 +86,6 @@ vertices = [sampleSize];
 
 function initMap() {
 	elevator = new google.maps.ElevationService;
-	for (var i = 0; i < sampleSize; i++ ){
 		elevator.getElevationForLocations({
 		    'locations': requestInputs
 		}, function(results, status) {
@@ -100,5 +99,5 @@ function initMap() {
 				console.log("Elevation service failed due to: " + status);
 			}
 		});
-	}
+
 }
