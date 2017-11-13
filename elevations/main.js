@@ -151,8 +151,8 @@ function initMap() {
 				
 				for (var j =  0; j < fullRow - 1; j++){
 					for (var i=0; i < fullRow- 1; i++){
-						geometry.faces.push( new THREE.Face3( fullRow* j + i, fullRow*j + i+1, fullRow * (j + 1) + i ) );
-						geometry.faces.push( new THREE.Face3( fullRow* j + i+1, fullRow * (j + 1) + i + 1, fullRow * (j + 1) + i) );
+						geometry.faces.push( new THREE.Face3( fullRow * (j + 1) + i, fullRow*j + i+1, fullRow* j + i) );
+						geometry.faces.push( new THREE.Face3( fullRow* j + i+1,fullRow * (j + 1) + i, fullRow * (j + 1) + i + 1, fullRow* j + i+1) );
 
 					}
 				}
@@ -163,17 +163,58 @@ function initMap() {
 
 				geometry.computeBoundingSphere();
 				geometry.center()
+				geometry.computeVertexNormals()
+				geometry.computeFaceNormals()
 
 
-				var material = new THREE.MeshBasicMaterial({color: 0x1EAEDB, wireframe: true});
+				var material = new THREE.MeshLambertMaterial({color: 0x1EAEDB, wireframe: false});
 				var cube = new THREE.Mesh(geometry, material);
 				scene.add(cube);
 				camera.position.z = topHeight*1.3;    
 				camera.position.x = 0*cellSize;    
 				camera.position.y = 15*cellSize;  
 				camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), -0.5);      
+
+
+				var materialtest = new THREE.MeshLambertMaterial({color: 0x1EAEDB, wireframe: false});
+				var sphere = new THREE.Mesh(new THREE.SphereGeometry( 5, 32, 32 ), materialtest);
+				sphere.position.set(-maxElv/2,maxElv/2,0);
+				//scene.add(sphere);
+
+				var sphere2 = new THREE.Mesh(new THREE.SphereGeometry( 5, 32, 32 ), materialtest);
+				sphere2.position.set(maxElv/2,maxElv/2,0);
+				//scene.add(sphere2);
+
+				var sphere3 = new THREE.Mesh(new THREE.SphereGeometry( 5, 32, 32 ), materialtest);
+				sphere3.position.set(0,maxElv/2,-maxElv/2);
+				//scene.add(sphere3);
+
+				var sphere4 = new THREE.Mesh(new THREE.SphereGeometry( 2, 32, 32 ), materialtest);
+				sphere3.position.set(0,maxElv/4,maxElv/2);
+				//scene.add(sphere3);
+
     			
+
+				var light = new THREE.PointLight( 0x9999ff, 3, 100  ); // soft white light
+				light.position.set(-maxElv/2,maxElv/2,0);
+				scene.add( light );
+
+				var light2 = new THREE.PointLight( 0x99ff99, 2, 100  ); // soft white light
+				light2.position.set(maxElv/2,maxElv/2,0);
+				scene.add( light2 );
+
+				var light3 = new THREE.PointLight( 0xffffff, 3, 100  ); // soft white light
+				light3.position.set(0,maxElv/2,-maxElv/2);
+				scene.add( light3 );
+
+				var light4 = new THREE.PointLight( 0xff9999, 2, 100  ); // soft white light
+				light4.position.set(0,maxElv/4,maxElv/2);
+				scene.add( light4 );
+
+
     			clock = new THREE.Clock();
+
+
     
 				function render() {
 					requestAnimationFrame(render);
