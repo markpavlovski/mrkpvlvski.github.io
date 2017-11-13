@@ -162,23 +162,28 @@ function initMap() {
 
 
 				geometry.computeBoundingSphere();
+				geometry.center()
 
 
 				var material = new THREE.MeshBasicMaterial({color: 0x1EAEDB, wireframe: true});
 				var cube = new THREE.Mesh(geometry, material);
 				scene.add(cube);
-				camera.position.z = topHeight*2.5;    
-				camera.position.x = 11*cellSize;    
-				camera.position.y = 5*cellSize;        
-    
+				camera.position.z = topHeight*1.3;    
+				camera.position.x = 0*cellSize;    
+				camera.position.y = 15*cellSize;  
+				camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), -0.5);      
+    			
+    			clock = new THREE.Clock();
     
 				function render() {
 					requestAnimationFrame(render);
 
 					var y_axis = new THREE.Vector3(0, -1, 0);
 					var z_axis = new THREE.Vector3(0, 0, -1);
-					// cube.quaternion.setFromUnitVectors(mouse, y_axis.clone().normalize());
-					cube.quaternion.setFromUnitVectors(mouse, z_axis.clone().normalize());
+					time = clock.getElapsedTime();
+					cube.quaternion.setFromAxisAngle(new THREE.Vector3( 0, 1, 0 ), time/2.2);
+					
+					//cube.quaternion.setFromUnitVectors(mouse, z_axis.clone().normalize());
 					renderer.render(scene, camera);
 				};
 				render();
