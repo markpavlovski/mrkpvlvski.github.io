@@ -34,7 +34,6 @@ var loc = inputloc.split(", ");
 
 // Inputs:
 radius = 10;
-//scale = .5; 
 
 
 resolutionWidth = 0.001265; // Fremont city block length North-South
@@ -98,9 +97,108 @@ function initMap() {
 				}
 				document.getElementById('cell'+(sampleSize-1)/2).style.color = '#ccffff';
 
+
+
+
+
+				var scene = new THREE.Scene();
+				scene.background = new THREE.Color( 0xccffff );
+				var camera = new THREE.PerspectiveCamera(75, window.innerWidth/ window.innerHeight / .6, 1, 10000);
+				var renderer = new THREE.WebGLRenderer();
+				renderer.setSize(window.innerWidth, window.innerHeight * .6);
+
+				mouse = new THREE.Vector3()
+
+				function onDocumentMouseMove(event) {
+				    event.preventDefault();
+				    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+				    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+				    mouse.z = -1.6;
+				}
+				document.addEventListener('mousemove', onDocumentMouseMove, false);
+				containerThree = document.getElementById( 'canvas' );
+				document.body.appendChild( containerThree );
+				containerThree.appendChild( renderer.domElement );
+				var geometry = new THREE.Geometry();
+
+				// Define Vertices
+
+				// geometry.vertices.push(
+				//   new THREE.Vector3( -250, 250, elevations[0] ),
+				//   new THREE.Vector3( -225, 250, elevations[1] ),
+				//   new THREE.Vector3( -250, 225, elevations[2] )
+				// );
+
+
+				fullRow = 2*radius+1;
+				cellSize = (maxElv-minElv)/21
+				topHeight = maxElv - minElv
+				heightScale = 2
+
+				for (var i =0; i < fullRow; i++){
+					for (var j=0; j < fullRow; j++){
+						geometry.vertices.push(
+							new THREE.Vector3( cellSize* j, (elevations[fullRow*i+j]-minElv)/heightScale, cellSize*i)
+						);
+					}
+				}
+
+				console.log(geometry.vertices);
+
+				// Define Faces
+
+				//geometry.faces.push( new THREE.Face3( 0, 1, 2 ) );
+				
+				for (var j =  0; j < fullRow - 1; j++){
+					for (var i=0; i < fullRow- 1; i++){
+						geometry.faces.push( new THREE.Face3( fullRow* j + i, fullRow*j + i+1, fullRow * (j + 1) + i ) );
+						geometry.faces.push( new THREE.Face3( fullRow* j + i+1, fullRow * (j + 1) + i + 1, fullRow * (j + 1) + i) );
+
+					}
+				}
+
+
+
+
+
+				geometry.computeBoundingSphere();
+
+
+				var material = new THREE.MeshBasicMaterial({color: 0x1EAEDB, wireframe: true});
+				var cube = new THREE.Mesh(geometry, material);
+				scene.add(cube);
+				camera.position.z = topHeight*2.5;    
+				camera.position.x = 11*cellSize;    
+				camera.position.y = 5*cellSize;        
+    
+    
+				function render() {
+					requestAnimationFrame(render);
+
+					var y_axis = new THREE.Vector3(0, -1, 0);
+					var z_axis = new THREE.Vector3(0, 0, -1);
+					// cube.quaternion.setFromUnitVectors(mouse, y_axis.clone().normalize());
+					cube.quaternion.setFromUnitVectors(mouse, z_axis.clone().normalize());
+					renderer.render(scene, camera);
+				};
+				render();
+
+
+
+
+
+
+
+
+
+
+
 			} else {
 				console.log("Elevation service failed due to: " + status);
 			}
 		});
 
 }
+	     	
+
+
