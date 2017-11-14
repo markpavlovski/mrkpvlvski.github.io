@@ -16,8 +16,8 @@ function Shade(pct) {
 }
 
 // Get User Inputs
-var inputloc = prompt("Please enter coordinates:", "47.659803, -122.353963");
-var scale = prompt("Please input scale:", 1);
+var inputloc = prompt("Please enter coordinates (default is Lighthouse Roasters in Fremont):", "47.659064, -122.354199");
+var scale = prompt("Please input scale: (1 corresponds to the length of one block N-S)", 1);
 var loc = inputloc.split(", ");
 
 
