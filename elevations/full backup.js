@@ -20,51 +20,55 @@ var inputloc = prompt("Please enter coordinates (default is Lighthouse Roasters 
 var scale = prompt("Please input scale: (1 corresponds to the length of one block N-S)", 1);
 var loc = inputloc.split(", ");
 
-// Defaults
-var tileRadius = 10; // Tile size resolves to 21 by 21 grid which is close to max individual request for elevation API
-var tileLength = 2 * tileRadius + 1;
-var resolutionWidth = 0.001265; // Fremont city block length North-South
-var gridRadius = 1; // gridRadius of 1 is equivalent to 3 x 3 tiling, gridRadius of 2 equivalent to 5 x 5 tiling, etc.
-var gridLength = 2* gridRadius + 1
 
+// Defaults
+var radius = 10;
+var resolutionWidth = 0.001265; // Fremont city block length North-South
 
 // Stage Grid
 var step = resolutionWidth * scale;
-var sampleSize = tileLength ** 2;
+var sampleSize = ( 2 * radius + 1 ) ** 2;
 var anchorLocation = {
 	lat: parseFloat(loc[0]), 
 	lng: parseFloat(loc[1])
 };
 var topLeftLocation = {
-	lat: anchorLocation.lat + tileRadius * step + gridRadius*tileLength*step, 
-	lng: anchorLocation.lng - tileRadius * step - gridRadius*tileLength*step
+	lat: anchorLocation.lat + radius * step, 
+	lng: anchorLocation.lng - radius * step
 };
-
-
-var allInputLocations = [];
-for(var i = 0; i < gridLength ** 2; i++){
-    allInputLocations[i] = [];     
-}
-
-for (var k = 0; k < gridLength**2; k++ ){
-	for ( var i = 0; i < tileLength; i++) {
-		for (var j = 0; j < tileLength; j ++){
-			allInputLocations[k].push({
-				lat: topLeftLocation.lat - step * i - tileLength * (k - k % gridLength)/gridLength *step,
-				lng: topLeftLocation.lng + step * j + tileLength * (k % gridLength)*step
-			})
-		}
+var inputLocations = [];
+for ( var i = 0; i < 2 * radius + 1; i++) {
+	for (var j = 0; j < 2 * radius + 1; j ++){
+		inputLocations.push({
+				lat: topLeftLocation.lat - step * i , 
+				lng: topLeftLocation.lng + step * j, 
+		})
 	}
 }
-console.log(allInputLocations)
 
-var inputLocations = allInputLocations[1];
+
+var topLeftLocation2 = {
+	lat: anchorLocation.lat + radius * step - (2 * radius + 1)*step, 
+	lng: anchorLocation.lng - radius * step
+};
+var inputLocations2 = [];
+for ( var i = 0; i < 2 * radius + 1; i++) {
+	for (var j = 0; j < 2 * radius + 1; j ++){
+		inputLocations2.push({
+				lat: topLeftLocation2.lat - step * i , 
+				lng: topLeftLocation2.lng + step * j, 
+		})
+	}
+}
 
 
 container = document.getElementById('container');
 
 var elevations = [];
 var vertices = [];
+
+var elevations2 = [];
+var vertices2 = [];
 
 function initMap() {
 	var elevator = new google.maps.ElevationService;
@@ -87,6 +91,33 @@ function initMap() {
 			document.getElementById('cell'+(sampleSize-1)/2).style.color = '#ccffff';
 
 			// Load THREEJS model
+			loadScene()
+
+		} else {
+			console.log("Elevation service failed due to: " + status);
+		}
+	});
+
+
+	elevator.getElevationForLocations({'locations': inputLocations2}, function(results, status) {
+		if (status === 'OK') {
+
+			//Create elevation table, set negative elevations to -1.
+			for (var i = 0; i < sampleSize; i++){
+				elevations2.push(Math.max(results[i].elevation,-1))
+				vertices2.push([inputLocations[i].lng,inputLocations[i].lat,elevations2[i]])
+				container.innerHTML += "<div class='cell' id='cell" + sampleSize + i +"''>"+Math.round(elevations2[i])+"</div>";
+			}
+
+			// Shade cells by elevation
+			maxElv = Math.max.apply(null, elevations2)
+			minElv = Math.min.apply(null, elevations2)
+			for (var i = 0; i < sampleSize; i++){
+				document.getElementById('cell' + sampleSize + i).style.background = Shade( (elevations2[i] - minElv) / (maxElv - minElv))
+			}
+			document.getElementById('cell'+ sampleSize+ (sampleSize-1)/2).style.color = '#ccffff';
+
+			// Load THREEJS model
 			//loadScene()
 
 		} else {
@@ -95,13 +126,3 @@ function initMap() {
 	});
 }
 	
-
-// var arr = [];
-// for(var x = 0; x < 100; x++){
-//     arr[x] = [];    
-//     for(var y = 0; y < 100; y++){ 
-//         arr[x][y] = y**2;    
-//     }    
-// }
-
-// console.log(arr[1]);
