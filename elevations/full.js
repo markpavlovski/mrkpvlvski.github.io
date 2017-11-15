@@ -58,25 +58,29 @@ for (var k = 0; k < gridLength**2; k++ ){
 }
 console.log(allInputLocations)
 
-var inputLocations = allInputLocations[1];
+var inputLocations = allInputLocations[4];
 
-
-container = document.getElementById('container');
 
 var elevations = [];
 var vertices = [];
 
+for (var i = 0; i < gridLength; i++){
+	document.getElementById('grid').innerHTML += "<div class='container' id='container" + i +"''></div>"
+}
+
 function initMap() {
 	var elevator = new google.maps.ElevationService;
+
 	elevator.getElevationForLocations({'locations': inputLocations}, function(results, status) {
 		if (status === 'OK') {
-
+			var j = 1;
 			//Create elevation table, set negative elevations to -1.
 			for (var i = 0; i < sampleSize; i++){
 				elevations.push(Math.max(results[i].elevation,-1))
 				vertices.push([inputLocations[i].lng,inputLocations[i].lat,elevations[i]])
-				container.innerHTML += "<div class='cell' id='cell" + i +"''>"+Math.round(elevations[i])+"</div>";
+				document.getElementById('container'+j).innerHTML += "<div class='cell' id='cell" + i +"''>"+Math.round(elevations[i])+"</div>";
 			}
+
 
 			// Shade cells by elevation
 			maxElv = Math.max.apply(null, elevations)
