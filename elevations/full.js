@@ -26,11 +26,13 @@ var tileLength = 2 * tileRadius + 1;
 var resolutionWidth = 0.001265; // Fremont city block length North-South
 var gridRadius = 1; // gridRadius of 1 is equivalent to 3 x 3 tiling, gridRadius of 2 equivalent to 5 x 5 tiling, etc.
 var gridLength = 2* gridRadius + 1
+var step = resolutionWidth * scale;
+var sampleSize = tileLength ** 2;
+var gridSize = gridLength ** 2;
+
 
 
 // Stage Grid
-var step = resolutionWidth * scale;
-var sampleSize = tileLength ** 2;
 var anchorLocation = {
 	lat: parseFloat(loc[0]), 
 	lng: parseFloat(loc[1])
@@ -64,16 +66,15 @@ var inputLocations = allInputLocations[4];
 var elevations = [];
 var vertices = [];
 
-for (var i = 0; i < gridLength; i++){
+for (var i = 0; i < gridSize; i++){
 	document.getElementById('grid').innerHTML += "<div class='container' id='container" + i +"''></div>"
 }
 
 function initMap() {
 	var elevator = new google.maps.ElevationService;
-
+	var j = 0;
 	elevator.getElevationForLocations({'locations': inputLocations}, function(results, status) {
 		if (status === 'OK') {
-			var j = 1;
 			//Create elevation table, set negative elevations to -1.
 			for (var i = 0; i < sampleSize; i++){
 				elevations.push(Math.max(results[i].elevation,-1))
