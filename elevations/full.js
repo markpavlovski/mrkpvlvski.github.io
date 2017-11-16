@@ -66,41 +66,25 @@ var inputLocations = allInputLocations[4];
 var elevations = [];
 var vertices = [];
 
-for (var i = 0; i < gridSize; i++){
-	document.getElementById('grid').innerHTML += "<div class='container' id='container" + i +"''></div>"
-}
-
-
 
 function initMap() {
-	var elevator = new google.maps.ElevationService;
-	for (var j = 0; j < 2; j++){
-		elevator.getElevationForLocations({'locations': inputLocations}, function(results, status) {
+	
+	for (var j = 0; j < 3; j++){
+		var elevator = new google.maps.ElevationService;
+		elevator.getElevationForLocations({'locations': allInputLocations[3]}, function(results, status) {
 			if (status === 'OK') {
 				//Create elevation table, set negative elevations to -1.
 				for (var i = 0; i < sampleSize; i++){
 					elevations.push(Math.max(results[i].elevation,-1))
-					vertices.push([inputLocations[i].lng,inputLocations[i].lat,results[i].elevation])
-					document.getElementById('container'+j).innerHTML += "<div class='cell' id='cell" + j*sampleSize+i +"''>"+Math.round(elevations[i])+"</div>";
 				}
 
 
-				// Shade cells by elevation
-				maxElv = Math.max.apply(null, elevations)
-				minElv = Math.min.apply(null, elevations)
-				for (var i = 0; i < sampleSize; i++){
-					document.getElementById('cell' + j*sampleSize + i).style.background = Shade( (elevations[i] - minElv) / (maxElv - minElv))
-				}
-				document.getElementById('cell'+(sampleSize-1)/2).style.color = '#ccffff';
-
-				// Load THREEJS model
-				//loadScene()
 
 			} else {
 				console.log("Elevation service failed due to: " + status);
 			}
 		});
-		//sleep(1000)
+	
 	}
 }
 	
