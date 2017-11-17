@@ -32,25 +32,32 @@ var sampleSize = tileLength ** 2;
 var gridSize = gridLength ** 2;
 
 // Stage Request Inputs
-var anchorTileCenter = {
+var middleTileCenter = {
 	lat: parseFloat(loc[0]), 
 	lng: parseFloat(loc[1])
 };
-var anchorTileTopLeft = {
-	lat: anchorTileCenter.lat + tileRadius * step, 
-	lng: anchorTileCenter.lng - tileRadius * step
+console.log(middleTileCenter)
+var middleTileTopLeft = {
+	lat: middleTileCenter.lat + tileRadius * step, 
+	lng: middleTileCenter.lng - tileRadius * step
 };
+console.log(middleTileTopLeft)
 var gridTopLeft = {
-	lat: anchorTileTopLeft.lat + tileRadius * step,  
-	lng: anchorTileTopLeft.lng - tileRadius * step
+	lat: middleTileTopLeft.lat + gridRadius*tileLength*step,
+	lng: middleTileTopLeft.lng - gridRadius*tileLength*step
 };
-var topLeftArray = [];
-for (var i = 0; i < gridSize; i++ ){
-	topLeftArray.push({
-		lat: gridTopLeft.lat - step * i, //fix formula
-		lng: gridTopLeft.lng + step * j
-	})
+console.log(gridTopLeft)
+var tileAnchors = [];
+for (var i = 0; i < gridLength; i++ ){
+	for (var j = 0; j < gridLength; j++){
+		tileAnchors.push({
+			lat: gridTopLeft.lat - tileLength * step * i,
+			lng: gridTopLeft.lng + tileLength * step * j
+		})
+	}
 }
+console.log("tile anchors array ")
+console.log(tileAnchors)
 
 
 
@@ -64,12 +71,12 @@ function initMap(inputTopLeft) {
 
 	var requestLocations = [];
 	for ( var i = 0; i < 2 * tileRadius + 1; i++) {
-	for (var j = 0; j < 2 * tileRadius + 1; j ++){
-		requestLocations.push({
-				lat: inputTopLeft.lat - step * i , 
-				lng: inputTopLeft.lng + step * j, 
-		})
-	}
+		for (var j = 0; j < 2 * tileRadius + 1; j ++){
+			requestLocations.push({
+					lat: inputTopLeft.lat - step * i , 
+					lng: inputTopLeft.lng + step * j, 
+			})
+		}
 	}
 
 	var elevator = new google.maps.ElevationService;
@@ -92,13 +99,13 @@ function initMap(inputTopLeft) {
 
 var deltaTime = 5000; // in milliseconds
 var j = 0;
-for (var i = 0; i < topLeftArray.length; i++){
+for (var i = 0; i < tileAnchors.length; i++){
 	setTimeout(function(){
-		initMap(topLeftArray[j]);
+		initMap(tileAnchors[j]);
 		j++;
 	},i*deltaTime);
 }
-setTimeout(function(){visualizeResults();},topLeftArray.length*deltaTime);
+setTimeout(function(){visualizeResults();},tileAnchors.length*deltaTime);
 
 
 function visualizeResults(){
