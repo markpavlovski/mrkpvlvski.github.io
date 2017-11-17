@@ -16,55 +16,71 @@ function Shade(pct) {
 }
 
 // Get User Inputs
-var inputloc0 = prompt("Please enter coordinates (default is Lighthouse Roasters in Fremont):", "47.659064, -122.354199");
+var inputloc = prompt("Please enter coordinates (default is Lighthouse Roasters in Fremont):", "47.659064, -122.354199");
 var scale = prompt("Please input scale: (1 corresponds to the length of one block N-S)", 1);
-var inputArray = ["47.659064, -122.354199","47, -122"];
+var loc = inputloc.split(", ");
+
+// Defaults
+var tileRadius = 10;
+var tileLength = 2 * tileRadius + 1;
+var resolutionWidth = 0.001265; // Fremont city block length North-South
+var gridRadius = 1; // gridRadius of 1 is equivalent to 3 x 3 tiling, gridRadius of 2 equivalent to 5 x 5 tiling, etc.
+var gridLength = 2* gridRadius + 1;
+var step = resolutionWidth * scale;
+var sampleSize = tileLength ** 2;
+var gridSize = gridLength ** 2;
+
+// Stage Request Inputs
+var anchorTileCenter = {
+	lat: parseFloat(loc[0]), 
+	lng: parseFloat(loc[1])
+};
+var anchorTileTopLeft = {
+	lat: anchorTileCenter.lat + tileRadius * step, 
+	lng: anchorTileCenter.lng - tileRadius * step
+};
+var gridTopLeft = {
+	lat: anchorTileTopLeft.lat + tileRadius * step,  
+	lng: anchorTileTopLeft.lng - tileRadius * step
+};
+var topLeftArray = [];
+for (var i = 0; i < gridSize; i++ ){
+	topLeftArray.push({
+		lat: gridTopLeft.lat - step * i, //fix formula
+		lng: gridTopLeft.lng + step * j
+	})
+}
+
+
+
+//var inputArray = ["47.659064, -122.354199","47, -122","47.659064, -122.354199","47, -122"];
 
 container = document.getElementById('container');
-
-  	
 var multipleResults = []
 
 
+function initMap(inputTopLeft) {
 
-function initMap(inputAnchor) {
-
-
-	var loc = inputAnchor.split(", ");
-	var radius = 10;
-	var resolutionWidth = 0.001265; // Fremont city block length North-South
-
-	// Stage Grid
-	var step = resolutionWidth * scale;
-	var sampleSize = ( 2 * radius + 1 ) ** 2;
-	var anchorLocation = {
-	lat: parseFloat(loc[0]), 
-	lng: parseFloat(loc[1])
-	};
-	var topLeftLocation = {
-	lat: anchorLocation.lat + radius * step, 
-	lng: anchorLocation.lng - radius * step
-	};
-	var requestInputs = [];
-	for ( var i = 0; i < 2 * radius + 1; i++) {
-	for (var j = 0; j < 2 * radius + 1; j ++){
-		requestInputs.push({
-				lat: topLeftLocation.lat - step * i , 
-				lng: topLeftLocation.lng + step * j, 
+	var requestLocations = [];
+	for ( var i = 0; i < 2 * tileRadius + 1; i++) {
+	for (var j = 0; j < 2 * tileRadius + 1; j ++){
+		requestLocations.push({
+				lat: inputTopLeft.lat - step * i , 
+				lng: inputTopLeft.lng + step * j, 
 		})
 	}
 	}
 
 	var elevator = new google.maps.ElevationService;
-	elevator.getElevationForLocations({'locations': requestInputs}, function(results, status) {
+	elevator.getElevationForLocations({'locations': requestLocations}, function(results, status) {
 		var elevations = [];
 		if (status === 'OK') {
 			//Create elevation table
 			for (var i = 0; i < sampleSize; i++){
 				elevations.push(results[i].elevation)
-				requestInputs[i].elv = results[i].elevation
+				requestLocations[i].elv = results[i].elevation
 			}
-			multipleResults.push(requestInputs)
+			multipleResults.push(requestLocations)
 		} else {
 			console.log("Elevation service failed due to: " + status);
 		}
@@ -72,14 +88,24 @@ function initMap(inputAnchor) {
 	});
 }
 
-var deltaTime = 3000; // 3 seconds
 
+var deltaTime = 3000; // 3 seconds
 var j = 0;
-for (var i = 0; i < inputArray.length; i++){
+for (var i = 0; i < topLeftArray.length; i++){
 	setTimeout(function(){
-		initMap(inputArray[j]);
+		initMap(topLeftArray[j]);
 		j++;
 	},i*deltaTime);
 }
+setTimeout(function(){visualizeResults();},topLeftArray.length*deltaTime);
 
-	
+
+function visualizeResults(){
+	console.log("hello")
+	// elevationData = []
+	// for (var i=0; i<gridSize; i++){
+	// 	elevationData.push(
+	// 		multipleResults[i][0]
+	// 	)
+	// }
+}
