@@ -22,9 +22,10 @@ var loc = inputloc.split(", ");
 
 // Defaults
 var tileRadius = 10;
+var gridRadius = 1; // gridRadius of 0 is equivalent to 1 x 1 tiling, gridRadius of 2 equivalent to 5 x 5 tiling, etc.
+
 var tileLength = 2 * tileRadius + 1;
 var resolutionWidth = 0.001265; // Fremont city block length North-South
-var gridRadius = 1; // gridRadius of 1 is equivalent to 3 x 3 tiling, gridRadius of 2 equivalent to 5 x 5 tiling, etc.
 var gridLength = 2* gridRadius + 1;
 var step = resolutionWidth * scale;
 var sampleSize = tileLength ** 2;
@@ -89,7 +90,7 @@ function initMap(inputTopLeft) {
 }
 
 
-var deltaTime = 3000; // 3 seconds
+var deltaTime = 5000; // in milliseconds
 var j = 0;
 for (var i = 0; i < topLeftArray.length; i++){
 	setTimeout(function(){
@@ -102,10 +103,20 @@ setTimeout(function(){visualizeResults();},topLeftArray.length*deltaTime);
 
 function visualizeResults(){
 	console.log("hello")
-	// elevationData = []
-	// for (var i=0; i<gridSize; i++){
-	// 	elevationData.push(
-	// 		multipleResults[i][0]
-	// 	)
-	// }
+	var elevationData = []
+	var row = []
+	for (var l =0; l < gridLength; l++){
+		row = multipleResults.slice(l*gridLength, (l+1)*gridLength)
+		console.log(row)
+		for (var k =0; k < tileLength; k++){
+			for (var i =0; i < gridLength; i++){
+				for (var j=0; j < tileLength; j++){
+
+					elevationData.push(row[i][tileLength*k + j]);
+
+				}
+			}
+		}
+	}
+	console.log(elevationData)
 }
