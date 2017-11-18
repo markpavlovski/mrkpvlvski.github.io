@@ -138,7 +138,7 @@ function visualizeResults(){
 			cellColor = Shade( (elevationData[i].elv - minElv) / (maxElv - minElv))
 			document.getElementById('cell' + i).style.background = cellColor
 		}
-		document.getElementById('cell'+Math.floor((elevationData.length)/2).style.color = '#ccffff';
+		document.getElementById('cell'+Math.floor((elevationData.length)/2)).style.color = '#ccffff';
 		progressBar.innerHTML = "Done"
 		// Load THREEJS model
 		//loadScene()
