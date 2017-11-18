@@ -14,7 +14,7 @@ function loadScene(){
 	
 	//Generate Mesh
 	var geometry = new THREE.Geometry();
-	var fullRow = 2*radius+1;
+	var fullRow = tileLength * gridLength;
 	var cellSize = (maxElv-minElv)/21
 	var topHeight = maxElv - minElv
 	var heightScale = 2
@@ -23,7 +23,7 @@ function loadScene(){
 		for (var i =0; i < fullRow; i++){
 			for (var j=0; j < fullRow; j++){
 				geometry.vertices.push(
-					new THREE.Vector3( cellSize* j, (elevations[fullRow*i+j]-minElv)/heightScale, cellSize*i)
+					new THREE.Vector3( cellSize* j, (elevationData[fullRow*i+j].elv-minElv)/heightScale, cellSize*i)
 				)
 			}
 		}

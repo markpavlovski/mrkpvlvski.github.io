@@ -106,20 +106,17 @@ for (var i = 0; i < tileAnchors.length; i++){
 }
 setTimeout(function(){visualizeResults();},tileAnchors.length*deltaTime);
 
-
+var minElv = Number.MAX_VALUE
+var maxElv = -1
+var elevationData = []
 
 function visualizeResults(){
 	progressBar.innerHTML = "Gathering Data: 100%"
 
-	
-	var elevationData = []
 	var row = []
 	for (var l =0; l < gridLength; l++){
 		row = multipleResults.slice(l*gridLength, (l+1)*gridLength)
 		
-		var minElv = Number.MAX_VALUE
-		var maxElv = -1
-
 		for (var k =0; k < tileLength; k++){
 			for (var i =0; i < gridLength; i++){
 				for (var j=0; j < tileLength; j++){
@@ -141,7 +138,9 @@ function visualizeResults(){
 			cellColor = Shade( (elevationData[i].elv - minElv) / (maxElv - minElv))
 			document.getElementById('cell' + i).style.background = cellColor
 		}
-		progressBar.innerHTML = ""
+		progressBar.innerHTML = "Done"
+		// Load THREEJS model
+		//loadScene()
 
 	}
 }
