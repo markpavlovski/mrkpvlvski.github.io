@@ -95,7 +95,7 @@ function initMap(inputTopLeft) {
 }
 
 
-var deltaTime = 5000; // in milliseconds
+var deltaTime = 4000; // in milliseconds
 var j = 0;
 for (var i = 0; i < tileAnchors.length; i++){
 	setTimeout(function(){
@@ -138,6 +138,7 @@ function visualizeResults(){
 			cellColor = Shade( (elevationData[i].elv - minElv) / (maxElv - minElv))
 			document.getElementById('cell' + i).style.background = cellColor
 		}
+		document.getElementById('cell'+(elevationData.length-1)/2).style.color = '#ccffff';
 		progressBar.innerHTML = "Done"
 		// Load THREEJS model
 		//loadScene()
