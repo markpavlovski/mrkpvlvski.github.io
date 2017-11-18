@@ -28,7 +28,7 @@ var tileLength = 2 * tileRadius + 1;
 var resolutionWidth = 0.001265; // Fremont city block length North-South
 var gridLength = 2* gridRadius + 1;
 var step = resolutionWidth * scale;
-var sampleSize = tileLength ** 2;
+var tileSize = tileLength ** 2;
 var gridSize = gridLength ** 2;
 
 // Stage Request Inputs
@@ -63,7 +63,7 @@ console.log(tileAnchors)
 
 //var inputArray = ["47.659064, -122.354199","47, -122","47.659064, -122.354199","47, -122"];
 
-container = document.getElementById('container');
+
 var multipleResults = []
 
 
@@ -84,7 +84,7 @@ function initMap(inputTopLeft) {
 		var elevations = [];
 		if (status === 'OK') {
 			//Create elevation table
-			for (var i = 0; i < sampleSize; i++){
+			for (var i = 0; i < tileSize; i++){
 				elevations.push(results[i].elevation)
 				requestLocations[i].elv = results[i].elevation
 			}
@@ -97,7 +97,7 @@ function initMap(inputTopLeft) {
 }
 
 
-var deltaTime = 5000; // in milliseconds
+var deltaTime = 3000; // in milliseconds
 var j = 0;
 for (var i = 0; i < tileAnchors.length; i++){
 	setTimeout(function(){
@@ -108,22 +108,43 @@ for (var i = 0; i < tileAnchors.length; i++){
 setTimeout(function(){visualizeResults();},tileAnchors.length*deltaTime);
 
 
+
 function visualizeResults(){
 	console.log("hello")
+	container = document.getElementById('container');
+	container.style.width = 25 * tileLength * gridLength + "px";
 	var elevationData = []
 	var row = []
 	for (var l =0; l < gridLength; l++){
 		row = multipleResults.slice(l*gridLength, (l+1)*gridLength)
 		console.log(row)
+		
+		var minElv = Number.MAX_VALUE
+		var maxElv = -1
+
 		for (var k =0; k < tileLength; k++){
 			for (var i =0; i < gridLength; i++){
 				for (var j=0; j < tileLength; j++){
 
-					elevationData.push(row[i][tileLength*k + j]);
+					var position = row[i][tileLength*k + j]
+					var cellNumber = l*tileSize*gridLength + k*gridLength*tileLength + i*tileLength + j	
 
+					elevationData.push(position);
+					container.innerHTML += "<div class='cell' id='cell" + cellNumber+"''>"+Math.max(Math.round(position.elv),-1)+"</div>";
+
+					if (position.elv < minElv){ minElv = position.elv} 
+					if (position.elv > maxElv){ maxElv = position.elv} 
 				}
 			}
 		}
+
+		for (var i = 0; i < elevationData.length; i++){
+			cellColor = Shade( (elevationData[i].elv - minElv) / (maxElv - minElv))
+			document.getElementById('cell' + i).style.background = cellColor
+			//document.getElementById('cell' + i).style.color = cellColor
+		}
+
+
 	}
 	console.log(elevationData)
 }
