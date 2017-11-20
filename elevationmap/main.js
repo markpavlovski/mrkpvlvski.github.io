@@ -114,9 +114,10 @@ function visualizeResults(){
 	progressBar.innerHTML = "Gathering Data: 100%"
 
 	var row = []
+	tableHTMLString = ""
 	for (var l =0; l < gridLength; l++){
 		row = multipleResults.slice(l*gridLength, (l+1)*gridLength)
-		
+			
 		for (var k =0; k < tileLength; k++){
 			for (var i =0; i < gridLength; i++){
 				for (var j=0; j < tileLength; j++){
@@ -125,23 +126,23 @@ function visualizeResults(){
 					var cellNumber = l*tileSize*gridLength + k*gridLength*tileLength + i*tileLength + j	
 
 					elevationData.push(position);
-					container.innerHTML += "<div class='cell' id='cell" + cellNumber+"''>"+Math.max(Math.round(position.elv),-1)+"</div>";
+					tableHTMLString += "<div class='cell' id='cell" + cellNumber+"''>"+Math.max(Math.round(position.elv),-1)+"</div>";
 
 					if (position.elv < minElv){ minElv = position.elv} 
 					if (position.elv > maxElv){ maxElv = position.elv} 
 				}
 			}
 		}
-
-		progressBar.innerHTML = "Rendering Elevation Table"
-		for (var i = 0; i < elevationData.length; i++){
-			cellColor = Shade( (elevationData[i].elv - minElv) / (maxElv - minElv))
-			document.getElementById('cell' + i).style.background = cellColor
-		}
-		document.getElementById('cell'+Math.floor((elevationData.length)/2)).style.color = '#ccffff';
-		progressBar.innerHTML = "Done"
-		// Load THREEJS model
-		//loadScene()
-
 	}
+	container.innerHTML = tableHTMLString;
+
+	progressBar.innerHTML = "Rendering Elevation Table"
+	for (var i = 0; i < elevationData.length; i++){
+		cellColor = Shade( (elevationData[i].elv - minElv) / (maxElv - minElv))
+		document.getElementById('cell' + i).style.background = cellColor
+	}
+	document.getElementById('cell'+Math.floor((elevationData.length)/2)).style.color = '#ccffff';
+	progressBar.innerHTML = "Done"
+	// Load THREEJS model
+	//loadScene()
 }
