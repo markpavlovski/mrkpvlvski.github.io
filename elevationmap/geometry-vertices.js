@@ -53,7 +53,7 @@ function loadScene(){
 		geometry.computeFaceNormals()
 
 	// Setup scene
-	var material = new THREE.MeshLambertMaterial({vertexColors: THREE.VertexColors, wireframe: false}); //color: 0x1EAEDB 
+	var material = new THREE.MeshLambertMaterial({color: 0x1EAEDB, wireframe: false}); //color: 0x1EAEDB vertexColors: THREE.VertexColors
 	var cube = new THREE.Mesh(geometry, material);
 	scene.add(cube);
 
