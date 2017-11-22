@@ -4,20 +4,9 @@ function loadScene(){
 	//Stage standard variables
 	var scene = new THREE.Scene();
 	scene.background = new THREE.Color( 0xccffff );
-
-	var camera = new THREE.PerspectiveCamera(75, window.innerWidth/ window.innerHeight / 1.0, 1, 1000000);
-	
+	var camera = new THREE.PerspectiveCamera(75, window.innerWidth/ window.innerHeight / 1.0, 1, 10000);
 	var renderer = new THREE.WebGLRenderer();
 	renderer.setSize(window.innerWidth, window.innerHeight * 1.0);
-
-	var controls = new THREE.TrackballControls( camera );
-	controls.rotateSpeed = 1.0;
-	controls.zoomSpeed = 1.2;
-	controls.panSpeed = 0.8;
-	controls.noZoom = false;
-	controls.noPan = false;
-	controls.staticMoving = true;
-	controls.dynamicDampingFactor = 0.3;
 
 	containerThree = document.getElementById( 'canvas' );
 	document.body.appendChild( containerThree );
@@ -39,6 +28,13 @@ function loadScene(){
 				)
 			}
 		}
+
+
+		// for (var i = 0; i < multipleResults.length; i++){
+		// 	geometry.vertexColors[i] = new THREE.Color(0xff0000);
+		// }
+
+
 
 
 		
@@ -67,6 +63,30 @@ function loadScene(){
 	camera.position.y = 15*cellSize;  
 	camera.rotateOnAxis(new THREE.Vector3(1, 0, 0), -0.5);      
 
+	// Test sphere helper for light positioning
+	  // var materialtest = new THREE.MeshLambertMaterial({color: 0x1EAEDB, wireframe: false});
+	  // var sphere = new THREE.Mesh(new THREE.SphereGeometry( 5, 32, 32 ), materialtest);
+	  // sphere.position.set(-maxElv/2,maxElv/2,0);
+	  // scene.add(sphere);
+
+
+	// Add point lights
+
+	// var light = new THREE.PointLight( 0x9999ff, 2, 100  ); 
+	// light.position.set(0,(multipleResults[Math.floor(multipleResults.length/2)].elv-minElv)/(maxElv - minElv)*maxElv*1.1,0);
+	// scene.add( light );
+
+	// var light2 = new THREE.PointLight( 0x99ff99, 2, 100  ); 
+	// light2.position.set(maxElv/2,maxElv/2,0);
+	// scene.add( light2 );
+
+	// var light3 = new THREE.PointLight( 0xffffff, 2, 100  ); 
+	// light3.position.set(0,maxElv/2,-maxElv/2);
+	// scene.add( light3 );
+
+	// var light4 = new THREE.PointLight( 0xff9999, 2, 100  ); 
+	// light4.position.set(0,maxElv/4,maxElv/2);
+	// scene.add( light4 );
 
 	var ambLight = new THREE.AmbientLight( 0x050101 ); // soft light
 	scene.add( ambLight );
@@ -80,26 +100,13 @@ function loadScene(){
 	clock = new THREE.Clock();
 	rotationAxis = new THREE.Vector3( 0, 1, 0 )
 	rotationSpeed = 2.5
-	
-
-	//Window resize
-	window.addEventListener( 'resize', onWindowResize, false );
-
 
  	// Render scene
 	function render() {
-		controls.update();
 		requestAnimationFrame(render);
-		//cube.quaternion.setFromAxisAngle(rotationAxis, clock.getElapsedTime()/rotationSpeed);
+		cube.quaternion.setFromAxisAngle(rotationAxis, clock.getElapsedTime()/rotationSpeed);
 		renderer.render(scene, camera);
 	};	
 	render();
-
-	function onWindowResize() {
-		camera.aspect = window.innerWidth / window.innerHeight;
-		camera.updateProjectionMatrix();
-		renderer.setSize( window.innerWidth, window.innerHeight );
-	}
-
 
 }
