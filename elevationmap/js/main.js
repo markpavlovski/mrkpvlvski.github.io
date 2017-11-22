@@ -1,5 +1,18 @@
 //Note to self: latitude is N-S, longitude i E-W
 
+function download(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+
 
 // Convert percentage into hexadecimal greyscale color
 function Shade(pct) {
@@ -115,6 +128,7 @@ function visualizeResults(){
 
 	var row = []
 	tableHTMLString = ""
+	tableHTMLStringNoElv = ""
 	for (var l =0; l < gridLength; l++){
 		row = multipleResults.slice(l*gridLength, (l+1)*gridLength)
 			
@@ -122,14 +136,15 @@ function visualizeResults(){
 			for (var i =0; i < gridLength; i++){
 				for (var j=0; j < tileLength; j++){
 
-					var position = row[i][tileLength*k + j]
+					var newVertex = row[i][tileLength*k + j]
 					var cellNumber = l*tileSize*gridLength + k*gridLength*tileLength + i*tileLength + j	
 
-					elevationData.push(position);
-					tableHTMLString += "<div class='cell' id='cell" + cellNumber+"''>"+Math.max(Math.round(position.elv),-1)+"</div>";
+					elevationData.push(newVertex);
+					tableHTMLString += "<div class='cell' id='cell" + cellNumber+"''>"+Math.max(Math.round(newVertex.elv),-1)+"</div>";
+					tableHTMLStringNoElv += "<div class='cell' id='cell" + cellNumber+"''> </div>";
 
-					if (position.elv < minElv){ minElv = position.elv} 
-					if (position.elv > maxElv){ maxElv = position.elv} 
+					if (newVertex.elv < minElv){ minElv = newVertex.elv} 
+					if (newVertex.elv > maxElv){ maxElv = newVertex.elv} 
 				}
 			}
 		}
@@ -137,12 +152,15 @@ function visualizeResults(){
 	container.innerHTML = tableHTMLString;
 
 	progressBar.innerHTML = "Rendering Elevation Table"
-	// for (var i = 0; i < elevationData.length; i++){
-	// 	cellColor = Shade( (elevationData[i].elv - minElv) / (maxElv - minElv))
-	// 	document.getElementById('cell' + i).style.background = cellColor
-	// }
+	for (var i = 0; i < elevationData.length; i++){
+		cellColor = Shade( (elevationData[i].elv - minElv) / (maxElv - minElv))
+		document.getElementById('cell' + i).style.background = cellColor
+	}
 	document.getElementById('cell'+Math.floor((elevationData.length)/2)).style.color = '#ccffff';
 	progressBar.innerHTML = "Done"
+	// Download Elevation Data
+	download('testss', JSON.stringify(elevationData));
+	myString = JSON.stringify(elevationData);
 	// Load THREEJS model
-	//loadScene()
+	loadScene()
 }
