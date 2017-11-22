@@ -16,10 +16,10 @@ function Shade(pct) {
 
 // Get User Inputs
 var inputloc = "47.659064, -122.354199";
-var scale = 1;
-var gridRadius = 3;
+var scale = 3;
+var gridRadius = 5;
 var loc = inputloc.split(", ");
-var elevationData = data_1_3;
+var elevationData = data_3_5;
 
 
 // Defaults
@@ -34,7 +34,7 @@ var gridSize = gridLength ** 2;
 
 // Set Up Display
 container = document.getElementById('container');
-defaultCellSize = Math.round(0.9 * window.innerWidth / tileLength / gridLength);
+defaultCellSize = Math.round(0.85 * window.innerHeight / tileLength / gridLength);
 defaultContainerSize = defaultCellSize * tileLength * gridLength;
 container.style.width = defaultContainerSize + "px";
 
