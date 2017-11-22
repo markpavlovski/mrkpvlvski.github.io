@@ -34,7 +34,7 @@ var gridSize = gridLength ** 2;
 
 // Set Up Display
 container = document.getElementById('container');
-defaultCellSize = 25;
+defaultCellSize = Math.round(0.9 * window.innerWidth / tileLength / gridLength);
 defaultContainerSize = defaultCellSize * tileLength * gridLength;
 container.style.width = defaultContainerSize + "px";
 
@@ -54,9 +54,14 @@ function visualizeResults(){
 	}
 	container.innerHTML = tableHTMLStringNoElv;
 
+	var activeCell;
 	for (var i = 0; i < elevationData.length; i++){
 		cellColor = Shade( (elevationData[i].elv - minElv) / (maxElv - minElv))
-		document.getElementById('cell' + i).style.background = cellColor
+		activeCell = document.getElementById('cell' + i);
+		activeCell.style.background = cellColor
+		activeCell.style.width = defaultCellSize + "px"
+		activeCell.style.height = defaultCellSize + "px"
+		activeCell.style.lineheight = defaultCellSize + "px"
 	}
 
 
