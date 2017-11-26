@@ -46,7 +46,10 @@ var elevationMatrix = [];
 var elevationStepMatrix = [];
 var elevationStepData = [];
 var contoursObjectMatrix = [];
+var contoursObjectMatrixFiltered = [];
 var contoursData = [];
+var contoursDataFiltered = [];
+
 
 var matrixSize = tileLength * gridLength;
 
@@ -56,6 +59,7 @@ function calculateContours(){
 		elevationMatrix.push([]);
 		elevationStepMatrix.push([]);
 		contoursObjectMatrix.push([]);
+		contoursObjectMatrixFiltered.push([]);
 	}
 	for (var i = 0; i < matrixSize; i++){
 		for (var j = 0; j< matrixSize; j++){
@@ -72,43 +76,78 @@ function calculateContours(){
 
 			var edge = false;
 			var leftEdge = false;
-			var rightEdge = false
 			var topEdge = false;
-			var bottomEdge = false;
+			var movedLeftIncrease = false;
+			var movedLeftDecrease = false;
+			var movedDownIncrease = false;
+			var movedDownDecrease = false;
 			var contourElevation = elevationStepMatrix[i][j];
 
 			
-				if ( j > 0 && elevationStepMatrix[i][j] != elevationStepMatrix[i][j-1]) {
-					leftEdge = true;
-				} 
-				if ( i > 0 && elevationStepMatrix[i][j] != elevationStepMatrix[i-1][j]) {
-					topEdge = true;
-				} 
-				if (leftEdge || topEdge){
-					edge = true;
-					contourElevation = 10 * contourStepSize;
+			if ( j > 0 && elevationStepMatrix[i][j] != elevationStepMatrix[i][j-1]) {
+				leftEdge = true;
+				if (elevationStepMatrix[i][j] > elevationStepMatrix[i][j-1]){
+					movedLeftIncrease = true;
+				} else {
+					movedLeftDecrease = true;
 				}
+			} 
+			if ( i > 0 && elevationStepMatrix[i][j] != elevationStepMatrix[i-1][j]) {
+				topEdge = true;
+				if ( elevationStepMatrix[i][j] > elevationStepMatrix[i-1][j]){
+					movedDownIncrease = true;
+				} else {
+					movedDownDecrease = true;
+				}
+			} 
+			if (leftEdge || topEdge){
+				edge = true;
+				contourElevation = 10 * contourStepSize;
+			}
 			
-			contoursObjectMatrix.push({
-				edgeFlag: edge,
-				leftEdgeFlag: leftEdge,
-				rightEdgeFlag: rightEdge,
-				topEdgeFlag: topEdge,
-				bottomEdgeFlag: bottomEdge,
-				elv: elevationStepMatrix[i][j]
-			});
-
+			// contoursObjectMatrix[i,j] = {
+			// 	edge: edge,
+			// 	leftEdge: leftEdge,
+			// 	topEdge: topEdge,
+			// 	movedLeftIncrease: movedLeftIncrease,
+			// 	movedLeftDecrease: movedLeftDecrease,
+			// 	movedDownIncrease: movedDownIncrease,
+			// 	movedDownDecrease: movedDownDecrease,
+			// 	elv: elevationStepMatrix[i][j]
+			// };
+			contoursObjectMatrix[i][j] = elevationData[matrixSize*i + j].elv
+			// 	leftEdge: leftEdge,
+			// 	topEdge: topEdge,
+			// 	movedLeftIncrease: movedLeftIncrease,
+			// 	movedLeftDecrease: movedLeftDecrease,
+			// 	movedDownIncrease: movedDownIncrease,
+			// 	movedDownDecrease: movedDownDecrease,
+			// 	elv: elevationStepMatrix[i][j]
+			// };
 
 			contoursData.push({
 				lat: 0,
 				lng: 0,
 				elv: contourElevation
 			});
-
-
-
 		}
 	}
+	// // Filter edges
+
+	// contoursObjectMatrixFiltered = contoursObjectMatrix;
+	// for (var i = 0; i < matrixSize; i++){
+	// 	for (var j=0; j < matrixSize; j++){
+	// 		if ( j > 0 && (contoursObjectMatrix[i][j-1].movedLeftIncrease && contoursObjectMatrix[i][j].movedLeftDecrease)){
+	// 			contoursObjectMatrixFiltered[i][j-1] = elevationStepMatrix[i,j-1];			
+	// 		}
+	// 		// contoursDataFiltered.push({
+	// 		// 	lat: 0,
+	// 		// 	lng: 0,
+	// 		// 	elv: contoursObjectMatrixFiltered[i][j-1].elv
+	// 		// });
+
+	// 	}
+	// }
 
 }
 calculateContours();
