@@ -105,25 +105,16 @@ function calculateContours(){
 				contourElevation = 10 * contourStepSize;
 			}
 			
-			// contoursObjectMatrix[i,j] = {
-			// 	edge: edge,
-			// 	leftEdge: leftEdge,
-			// 	topEdge: topEdge,
-			// 	movedLeftIncrease: movedLeftIncrease,
-			// 	movedLeftDecrease: movedLeftDecrease,
-			// 	movedDownIncrease: movedDownIncrease,
-			// 	movedDownDecrease: movedDownDecrease,
-			// 	elv: elevationStepMatrix[i][j]
-			// };
-			contoursObjectMatrix[i][j] = elevationData[matrixSize*i + j].elv
-			// 	leftEdge: leftEdge,
-			// 	topEdge: topEdge,
-			// 	movedLeftIncrease: movedLeftIncrease,
-			// 	movedLeftDecrease: movedLeftDecrease,
-			// 	movedDownIncrease: movedDownIncrease,
-			// 	movedDownDecrease: movedDownDecrease,
-			// 	elv: elevationStepMatrix[i][j]
-			// };
+			contoursObjectMatrix[i][j] = {
+				edge: edge,
+				leftEdge: leftEdge,
+				topEdge: topEdge,
+				movedLeftIncrease: movedLeftIncrease,
+				movedLeftDecrease: movedLeftDecrease,
+				movedDownIncrease: movedDownIncrease,
+				movedDownDecrease: movedDownDecrease,
+				elv: elevationStepMatrix[i][j]
+			};
 
 			contoursData.push({
 				lat: 0,
@@ -132,22 +123,26 @@ function calculateContours(){
 			});
 		}
 	}
-	// // Filter edges
+	// Filter edges
 
-	// contoursObjectMatrixFiltered = contoursObjectMatrix;
-	// for (var i = 0; i < matrixSize; i++){
-	// 	for (var j=0; j < matrixSize; j++){
-	// 		if ( j > 0 && (contoursObjectMatrix[i][j-1].movedLeftIncrease && contoursObjectMatrix[i][j].movedLeftDecrease)){
-	// 			contoursObjectMatrixFiltered[i][j-1] = elevationStepMatrix[i,j-1];			
-	// 		}
-	// 		// contoursDataFiltered.push({
-	// 		// 	lat: 0,
-	// 		// 	lng: 0,
-	// 		// 	elv: contoursObjectMatrixFiltered[i][j-1].elv
-	// 		// });
+	contoursObjectMatrixFiltered = contoursObjectMatrix;
+	for (var i = 0; i < matrixSize; i++){
+		for (var j=0; j < matrixSize; j++){
 
-	// 	}
-	// }
+			if ( j > 0 && (contoursObjectMatrix[i][j-1].movedLeftIncrease && contoursObjectMatrix[i][j].movedLeftDecrease)){
+				contoursObjectMatrixFiltered[i][j-1] = elevationStepMatrix[i,j-1];	
+				console.log("yess");	
+			}	
+
+			contoursDataFiltered.push({
+				lat: 0,
+				lng: 0,
+				elv: contoursObjectMatrixFiltered[i][j].elv
+			});
+
+
+		}
+	}
 
 }
 calculateContours();
@@ -184,7 +179,7 @@ function visualizeResults(elevationDataArray){
 	// Load THREEJS model
 	//loadScene()
 }
-visualizeResults(contoursData);
+visualizeResults(elevationStepData);
 
 document.getElementById('scaleDown').addEventListener('click', scaleTableDown, false);
 document.getElementById('scaleUp').addEventListener('click', scaleTableUp, false);
