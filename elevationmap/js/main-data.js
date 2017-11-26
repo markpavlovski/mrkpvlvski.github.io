@@ -45,10 +45,6 @@ var maxElv = -1
 var elevationMatrix = [];
 var elevationStepMatrix = [];
 var elevationStepData = [];
-var contoursObjectMatrix = [];
-var contoursObjectMatrixFiltered = [];
-var contoursData = [];
-var contoursDataFiltered = [];
 
 
 var matrixSize = tileLength * gridLength;
@@ -58,8 +54,6 @@ function calculateContours(){
 	for (var i = 0; i < matrixSize; i++ ){
 		elevationMatrix.push([]);
 		elevationStepMatrix.push([]);
-		contoursObjectMatrix.push([]);
-		contoursObjectMatrixFiltered.push([]);
 	}
 	for (var i = 0; i < matrixSize; i++){
 		for (var j = 0; j< matrixSize; j++){
@@ -72,78 +66,10 @@ function calculateContours(){
 				elv: elevationStepMatrix[i][j]
 			});
 
-			// Calculate Edges
-
-			var edge = false;
-			var leftEdge = false;
-			var topEdge = false;
-			var movedLeftIncrease = false;
-			var movedLeftDecrease = false;
-			var movedDownIncrease = false;
-			var movedDownDecrease = false;
-			var contourElevation = elevationStepMatrix[i][j];
-
 			
-			if ( j > 0 && elevationStepMatrix[i][j] != elevationStepMatrix[i][j-1]) {
-				leftEdge = true;
-				if (elevationStepMatrix[i][j] > elevationStepMatrix[i][j-1]){
-					movedLeftIncrease = true;
-				} else {
-					movedLeftDecrease = true;
-				}
-			} 
-			if ( i > 0 && elevationStepMatrix[i][j] != elevationStepMatrix[i-1][j]) {
-				topEdge = true;
-				if ( elevationStepMatrix[i][j] > elevationStepMatrix[i-1][j]){
-					movedDownIncrease = true;
-				} else {
-					movedDownDecrease = true;
-				}
-			} 
-			if (leftEdge || topEdge){
-				edge = true;
-				contourElevation = 10 * contourStepSize;
-			}
-			
-			contoursObjectMatrix[i][j] = {
-				edge: edge,
-				leftEdge: leftEdge,
-				topEdge: topEdge,
-				movedLeftIncrease: movedLeftIncrease,
-				movedLeftDecrease: movedLeftDecrease,
-				movedDownIncrease: movedDownIncrease,
-				movedDownDecrease: movedDownDecrease,
-				elv: elevationStepMatrix[i][j]
-			};
 
-			contoursData.push({
-				lat: 0,
-				lng: 0,
-				elv: contourElevation
-			});
-		}
-	}
-	// Filter edges
-
-	contoursObjectMatrixFiltered = contoursObjectMatrix;
-	for (var i = 0; i < matrixSize; i++){
-		for (var j=0; j < matrixSize; j++){
-
-			if ( j > 0 && (contoursObjectMatrix[i][j-1].movedLeftIncrease && contoursObjectMatrix[i][j].movedLeftDecrease)){
-				contoursObjectMatrixFiltered[i][j-1] = elevationStepMatrix[i,j-1];	
-				console.log("yess");	
-			}	
-
-			contoursDataFiltered.push({
-				lat: 0,
-				lng: 0,
-				elv: contoursObjectMatrixFiltered[i][j].elv
-			});
-
-
-		}
-	}
-
+}
+}
 }
 calculateContours();
 
