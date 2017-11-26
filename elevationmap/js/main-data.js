@@ -65,21 +65,21 @@ function calculateContours(){
 }
 calculateContours();
 
-function visualizeResults(){
+function visualizeResults(elevationDataArray){
 
 	tableHTMLString = ""
 	tableHTMLStringNoElv = ""
-	for (var i = 0; i < elevationData.length; i++){
-		tableHTMLString += "<div class='cell' id='cell" + i +"''>"+Math.max(Math.round(elevationData[i].elv),-1)+"</div>";
+	for (var i = 0; i < elevationDataArray.length; i++){
+		tableHTMLString += "<div class='cell' id='cell" + i +"''>"+Math.max(Math.round(elevationDataArray[i].elv),-1)+"</div>";
 		tableHTMLStringNoElv += "<div class='cell' id='cell" + i +"''> </div>";
-		if (elevationData[i].elv < minElv){ minElv = elevationData[i].elv} 
-		if (elevationData[i].elv > maxElv){ maxElv = elevationData[i].elv} 
+		if (elevationDataArray[i].elv < minElv){ minElv = elevationDataArray[i].elv} 
+		if (elevationDataArray[i].elv > maxElv){ maxElv = elevationDataArray[i].elv} 
 	}
 	container.innerHTML = tableHTMLStringNoElv;
 
 	var activeCell;
-	for (var i = 0; i < elevationData.length; i++){
-		cellColor = Shade( (elevationData[i].elv - minElv) / (maxElv - minElv))
+	for (var i = 0; i < elevationDataArray.length; i++){
+		cellColor = Shade( (elevationDataArray[i].elv - minElv) / (maxElv - minElv))
 		activeCell = document.getElementById('cell' + i);
 		activeCell.style.background = cellColor
 		activeCell.style.width = defaultCellSize + "px"
@@ -88,12 +88,12 @@ function visualizeResults(){
 	}
 
 
-	document.getElementById('cell'+Math.floor((elevationData.length)/2)).style.color = '#ccffff';
+	document.getElementById('cell'+Math.floor((elevationDataArray.length)/2)).style.color = '#ccffff';
 
 	// Load THREEJS model
 	//loadScene()
 }
-visualizeResults()
+visualizeResults(elevationData);
 
 document.getElementById('scaleDown').addEventListener('click', scaleTableDown, false);
 document.getElementById('scaleUp').addEventListener('click', scaleTableUp, false);
