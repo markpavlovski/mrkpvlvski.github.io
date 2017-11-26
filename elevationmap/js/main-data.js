@@ -16,11 +16,11 @@ function Shade(pct) {
 
 // Get User Inputs
 var inputloc = "47.659064, -122.354199";
-var scale = 3;
-var gridRadius = 5;
+var scale = 1;
+var gridRadius = 3;
 var loc = inputloc.split(", ");
-var elevationData = data_3_5;
-var contourStepSize = 100;
+var elevationData = data_1_3;
+var contourStepSize = 50;
 
 
 // Defaults
@@ -45,6 +45,8 @@ var maxElv = -1
 var elevationMatrix = [];
 var elevationStepMatrix = [];
 var elevationStepData = [];
+var contoursObjectMatrix = [];
+var contoursData = [];
 
 var matrixSize = tileLength * gridLength;
 
@@ -53,17 +55,73 @@ function calculateContours(){
 	for (var i = 0; i < matrixSize; i++ ){
 		elevationMatrix.push([]);
 		elevationStepMatrix.push([]);
+		contoursObjectMatrix.push([]);
 	}
 	for (var i = 0; i < matrixSize; i++){
 		for (var j = 0; j< matrixSize; j++){
 			elevationMatrix[i][j] = elevationData[matrixSize*i + j].elv;
-			elevationStepMatrix[i][j] = Math.max(Math.floor((elevationData[matrixSize*i + j].elv)/contourStepSize),0)*contourStepSize;
-			elevationStepData.push(elevationStepMatrix[i][j]);
+			
+			elevationStepMatrix[i][j] = Math.max(Math.floor((elevationData[matrixSize*i + j].elv)/contourStepSize),-1)*contourStepSize;
+			elevationStepData.push({
+				lat: 0,
+				lng: 0,
+				elv: elevationStepMatrix[i][j]
+			});
+
+			// Calculate Edges
+
+			var edge = false;
+			var leftEdge = false;
+			var rightEdge = false
+			var topEdge = false;
+			var bottomEdge = false;
+			var contourElevation = elevationStepMatrix[i][j];
+
+			if ( i > 0 && j > 0) {
+				if (elevationStepMatrix[i][j] > elevationStepMatrix[i][j-1]) {
+					leftEdge = true;
+				} 
+				if (elevationStepMatrix[i][j] < elevationStepMatrix[i][j-1]) {
+					rightEdge = true;
+				} 
+				if (elevationStepMatrix[i][j] > elevationStepMatrix[i-1][j]) {
+					topEdge = true;
+				} 
+				if (elevationStepMatrix[i][j] < elevationStepMatrix[i][j-1]) {
+					bottomEdge = true;
+				} 
+				if (leftEdge || topEdge){
+					edge = true;
+					contourElevation = 10 * contourStepSize;
+				}
+			}
+			contoursObjectMatrix.push({
+				edgeFlag: edge,
+				leftEdgeFlag: leftEdge,
+				rightEdgeFlag: rightEdge,
+				topEdgeFlag: topEdge,
+				bottomEdgeFlag: bottomEdge,
+				elv: elevationStepMatrix[i][j]
+			});
+
+
+			contoursData.push({
+				lat: 0,
+				lng: 0,
+				elv: contourElevation
+			});
+
+
+
 		}
 	}
 
 }
 calculateContours();
+
+
+
+
 
 function visualizeResults(elevationDataArray){
 
@@ -93,7 +151,7 @@ function visualizeResults(elevationDataArray){
 	// Load THREEJS model
 	//loadScene()
 }
-visualizeResults(elevationData);
+visualizeResults(contoursData);
 
 document.getElementById('scaleDown').addEventListener('click', scaleTableDown, false);
 document.getElementById('scaleUp').addEventListener('click', scaleTableUp, false);
