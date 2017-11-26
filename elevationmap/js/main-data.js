@@ -45,6 +45,7 @@ var maxElv = -1
 var elevationMatrix = [];
 var elevationStepMatrix = [];
 var elevationStepData = [];
+var levelObjects = [];
 
 
 var matrixSize = tileLength * gridLength;
@@ -54,22 +55,35 @@ function calculateContours(){
 	for (var i = 0; i < matrixSize; i++ ){
 		elevationMatrix.push([]);
 		elevationStepMatrix.push([]);
+		levelObjects.push([]);
+
 	}
 	for (var i = 0; i < matrixSize; i++){
 		for (var j = 0; j< matrixSize; j++){
 			elevationMatrix[i][j] = elevationData[matrixSize*i + j].elv;
-			
 			elevationStepMatrix[i][j] = Math.max(Math.floor((elevationData[matrixSize*i + j].elv)/contourStepSize),-1)*contourStepSize;
 			elevationStepData.push({
-				lat: 0,
-				lng: 0,
-				elv: elevationStepMatrix[i][j]
+				lat: elevationData[matrixSize*i+j].lat,
+				lng: elevationData[matrixSize*i+j].lng,
+				elv: elevationStepMatrix[i][j],
 			});
+		}
+	}
+	
+	for (var i = 0; i < matrixSize; i++){
+		for (var j = 0; j< matrixSize; j++){
+			levelObjects[i][j] = {
+				index: 0,
+				elv: elevationStepMatrix[i][j]
+			};
+			if (j > 0 && elevationStepMatrix[i][j] != elevationStepMatrix[i][j-1]){
+				levelObjects[i][j].index = levelObjects[i][j-1].index + 1;
+			} else if (j > 0){
+				levelObjects[i][j].index = levelObjects[i][j-1].index;
+			}
+		}
+	}
 
-			
-
-}
-}
 }
 calculateContours();
 
@@ -83,7 +97,7 @@ function visualizeResults(elevationDataArray){
 	tableHTMLStringNoElv = ""
 	for (var i = 0; i < elevationDataArray.length; i++){
 		tableHTMLString += "<div class='cell' id='cell" + i +"''>"+Math.max(Math.round(elevationDataArray[i].elv),-1)+"</div>";
-		tableHTMLStringNoElv += "<div class='cell' id='cell" + i +"''> </div>";
+		tableHTMLStringNoElv += "<div class='cell' id='cell" + i +"''> "+"</div>";
 		if (elevationDataArray[i].elv < minElv){ minElv = elevationDataArray[i].elv} 
 		if (elevationDataArray[i].elv > maxElv){ maxElv = elevationDataArray[i].elv} 
 	}
