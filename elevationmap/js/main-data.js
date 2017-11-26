@@ -77,24 +77,18 @@ function calculateContours(){
 			var bottomEdge = false;
 			var contourElevation = elevationStepMatrix[i][j];
 
-			if ( i > 0 && j > 0) {
-				if (elevationStepMatrix[i][j] > elevationStepMatrix[i][j-1]) {
+			
+				if ( j > 0 && elevationStepMatrix[i][j] != elevationStepMatrix[i][j-1]) {
 					leftEdge = true;
 				} 
-				if (elevationStepMatrix[i][j] < elevationStepMatrix[i][j-1]) {
-					rightEdge = true;
-				} 
-				if (elevationStepMatrix[i][j] > elevationStepMatrix[i-1][j]) {
+				if ( i > 0 && elevationStepMatrix[i][j] != elevationStepMatrix[i-1][j]) {
 					topEdge = true;
-				} 
-				if (elevationStepMatrix[i][j] < elevationStepMatrix[i][j-1]) {
-					bottomEdge = true;
 				} 
 				if (leftEdge || topEdge){
 					edge = true;
 					contourElevation = 10 * contourStepSize;
 				}
-			}
+			
 			contoursObjectMatrix.push({
 				edgeFlag: edge,
 				leftEdgeFlag: leftEdge,
