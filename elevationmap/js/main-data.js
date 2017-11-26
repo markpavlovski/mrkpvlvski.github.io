@@ -20,6 +20,7 @@ var scale = 3;
 var gridRadius = 5;
 var loc = inputloc.split(", ");
 var elevationData = data_3_5;
+var contourStepSize = 100;
 
 
 // Defaults
@@ -41,6 +42,28 @@ container.style.width = defaultContainerSize + "px";
 var minElv = Number.MAX_VALUE
 var maxElv = -1
 
+var elevationMatrix = [];
+var elevationStepMatrix = [];
+var elevationStepData = [];
+
+var matrixSize = tileLength * gridLength;
+
+function calculateContours(){
+
+	for (var i = 0; i < matrixSize; i++ ){
+		elevationMatrix.push([]);
+		elevationStepMatrix.push([]);
+	}
+	for (var i = 0; i < matrixSize; i++){
+		for (var j = 0; j< matrixSize; j++){
+			elevationMatrix[i][j] = elevationData[matrixSize*i + j].elv;
+			elevationStepMatrix[i][j] = Math.max(Math.floor((elevationData[matrixSize*i + j].elv)/contourStepSize),0)*contourStepSize;
+			elevationStepData.push(elevationStepMatrix[i][j]);
+		}
+	}
+
+}
+calculateContours();
 
 function visualizeResults(){
 
@@ -68,7 +91,7 @@ function visualizeResults(){
 	document.getElementById('cell'+Math.floor((elevationData.length)/2)).style.color = '#ccffff';
 
 	// Load THREEJS model
-	loadScene()
+	//loadScene()
 }
 visualizeResults()
 
