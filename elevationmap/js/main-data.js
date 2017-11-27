@@ -47,6 +47,7 @@ var elevationStepMatrix = [];
 var elevationStepData = [];
 var levelObjects = [];
 var masterIndex = 0;
+var bucketList = [];
 
 
 var matrixSize = tileLength * gridLength;
@@ -71,6 +72,7 @@ function calculateContours(){
 		}
 	}
 
+	// first pass horizontal grouping
 	for (var i = 0; i < matrixSize; i++){
 		for (var j = 0; j< matrixSize; j++){
 			levelObjects[i][j] = {
@@ -99,6 +101,26 @@ function calculateContours(){
 					}
 				}
 			}
+		}
+	}
+
+	// stage bucket mapping
+	for (var i = 0; i < masterIndex; i++){
+		bucketList.push([i])
+	}
+
+	// second pass vertical grouping
+	for (var i = 0; i< matrixSize - 1; i++){
+		for (var j = 0; j < matrixSize-1; j++){
+			//console.log(levelObjects[i][j].index)
+			// need to check to the right
+
+			if ( levelObjects[i][j].index != levelObjects[i][j+1].index && elevationStepMatrix[i][j] === elevationStepMatrix[i][j+1]){
+				console.log("hi")
+				bucketList[levelObjects[i][j].index].push(levelObjects[i][j+1].index);
+				bucketList[levelObjects[i][j+1].index].push(levelObjects[i][j].index);
+			}
+
 		}
 	}
 
