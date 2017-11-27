@@ -20,7 +20,7 @@ var scale = 1;
 var gridRadius = 3;
 var loc = inputloc.split(", ");
 var elevationData = data_1_3;
-var contourStepSize = 50;
+var contourStepSize = 60;
 
 
 // Defaults
@@ -72,8 +72,8 @@ function calculateContours(){
 		}
 	}
 
-	// first pass horizontal grouping
 	for (var i = 0; i < matrixSize; i++){
+		// first pass for row i
 		for (var j = 0; j< matrixSize; j++){
 			levelObjects[i][j] = {
 				index: 0,
@@ -87,19 +87,30 @@ function calculateContours(){
 				} 
 				masterIndex = Math.max(masterIndex,levelObjects[i][j].index);
 			} else {
-
 				if (elevationStepMatrix[i][j] === elevationStepMatrix[i-1][j]){
 					levelObjects[i][j].index = levelObjects[i-1][j].index;
 				} else {
 					if (j > 0 && elevationStepMatrix[i][j] != elevationStepMatrix[i][j-1]){
-						levelObjects[i][j].index = masterIndex + 1;
-						masterIndex++;
+						levelObjects[i][j].index = Math.max(masterIndex + 1, levelObjects[i][j-1].index + 1);
+						masterIndex = Math.max(masterIndex + 1, levelObjects[i][j-1].index + 1);
 					} else if (j > 0){
 						levelObjects[i][j].index = levelObjects[i][j-1].index;
+						masterIndex = Math.max(masterIndex, levelObjects[i][j-1].index);
+
 					} else {				
 						levelObjects[i][0].index = levelObjects[i-1][matrixSize-1].index + 1;
+						masterIndex = Math.max(masterIndex+1, levelObjects[i][0].index);
 					}
 				}
+			}
+		}
+		// second pass for row i
+		for (var j =  1; j < matrixSize; j++){
+			if (elevationStepMatrix[i][matrixSize - j] === elevationStepMatrix[i][matrixSize - j - 1] && levelObjects[i][matrixSize-j].index != levelObjects[i][matrixSize-j-1].index){
+				levelObjects[i][matrixSize-j-1].index = levelObjects[i][matrixSize-j].index;
+				// if (levelObjects[i][matrixSize-j-1].index === masterIndex){
+				// 	masterIndex--;
+				// } 
 			}
 		}
 	}
@@ -135,13 +146,21 @@ function visualizeResults(elevationDataArray){
 
 	tableHTMLString = ""
 	tableHTMLStringNoElv = ""
+	tableHTMLStringLevelIndex = ""
+	groupIndex = ""
 	for (var i = 0; i < elevationDataArray.length; i++){
 		tableHTMLString += "<div class='cell' id='cell" + i +"''>"+Math.max(Math.round(elevationDataArray[i].elv),-1)+"</div>";
+		groupIndex =  levelObjects[Math.floor((i-i%matrixSize)/matrixSize)][i % matrixSize].index;
+		if (groupIndex < 10){
+			groupIndex = "0"+groupIndex;
+		}
+		tableHTMLStringLevelIndex += "<div class='cell' id='cell" + i +"''> "+groupIndex+"</div>";
 		tableHTMLStringNoElv += "<div class='cell' id='cell" + i +"''> "+"</div>";
+
 		if (elevationDataArray[i].elv < minElv){ minElv = elevationDataArray[i].elv} 
 		if (elevationDataArray[i].elv > maxElv){ maxElv = elevationDataArray[i].elv} 
 	}
-	container.innerHTML = tableHTMLStringNoElv;
+	container.innerHTML = tableHTMLStringLevelIndex;
 
 	var activeCell;
 	for (var i = 0; i < elevationDataArray.length; i++){
