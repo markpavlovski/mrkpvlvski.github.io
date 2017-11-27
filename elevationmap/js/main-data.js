@@ -1,6 +1,8 @@
 
 
 // Convert percentage into hexadecimal greyscale color
+
+
 function Shade(pct) {
 	pct = 1 - pct
 	var rgbComponent = Math.round(255 * pct)
@@ -47,8 +49,8 @@ var elevationStepMatrix = [];
 var elevationStepData = [];
 var levelObjects = [];
 var masterIndex = 0;
-var bucketList = [];
-
+var mappingList = [];
+var finalMappingList = [];
 
 var matrixSize = tileLength * gridLength;
 
@@ -58,7 +60,6 @@ function calculateContours(){
 		elevationMatrix.push([]);
 		elevationStepMatrix.push([]);
 		levelObjects.push([]);
-
 	}
 	for (var i = 0; i < matrixSize; i++){
 		for (var j = 0; j< matrixSize; j++){
@@ -73,7 +74,7 @@ function calculateContours(){
 	}
 
 	for (var i = 0; i < matrixSize; i++){
-		// first pass for row i
+		// first pass - forward row i
 		for (var j = 0; j< matrixSize; j++){
 			levelObjects[i][j] = {
 				index: 0,
@@ -104,7 +105,7 @@ function calculateContours(){
 				}
 			}
 		}
-		// second pass for row i
+		// second pass - backward row i
 		for (var j =  1; j < matrixSize; j++){
 			if (elevationStepMatrix[i][matrixSize - j] === elevationStepMatrix[i][matrixSize - j - 1] && levelObjects[i][matrixSize-j].index != levelObjects[i][matrixSize-j-1].index){
 				levelObjects[i][matrixSize-j-1].index = levelObjects[i][matrixSize-j].index;
@@ -115,25 +116,40 @@ function calculateContours(){
 		}
 	}
 
-	// stage bucket mapping
-	for (var i = 0; i < masterIndex; i++){
-		bucketList.push([i])
-	}
+	// create a mapping list
+	// for (var i = 0; i < masterIndex; i++ ){
+	// 	mappingList.push([]);
+	// }
+	
 
-	// second pass vertical grouping
-	for (var i = 0; i< matrixSize - 1; i++){
-		for (var j = 0; j < matrixSize-1; j++){
-			//console.log(levelObjects[i][j].index)
-			// need to check to the right
+	// create mapping
 
-			if ( levelObjects[i][j].index != levelObjects[i][j+1].index && elevationStepMatrix[i][j] === elevationStepMatrix[i][j+1]){
-				console.log("hi")
-				bucketList[levelObjects[i][j].index].push(levelObjects[i][j+1].index);
-				bucketList[levelObjects[i][j+1].index].push(levelObjects[i][j].index);
+	for (var j = 0; j< matrixSize; j++){
+		for (var i = 1; i < matrixSize; i++){
+			// console.log(i + ', ' + j+ ', ' + elevationStepMatrix[matrixSize - i][j]+ ', ' + elevationStepMatrix[matrixSize - i - 1][j]+ ', ' + levelObjects[matrixSize - i - 1][j].index + ', ' + levelObjects[matrixSize - i - 1][j].index)
+			if (elevationStepMatrix[matrixSize - i][j] === elevationStepMatrix[matrixSize - i - 1][j] && levelObjects[matrixSize - i][j].index != levelObjects[matrixSize - i - 1][j].index){
+				// console.log('sup')
+				newmap = [levelObjects[matrixSize - i - 1][j].index, levelObjects[matrixSize - i][j].index];
+				mappingList.push(newmap);
 			}
-
 		}
 	}
+
+	// //filter mapping list
+	// for (var i =1; i < mappingList.length; i++){
+	// 	finalMappingList.push(mappingList[0]);
+	// 	for (var j = 0; j < Math.min(mappingList.length, finalMappingList.length); j++){
+	// 		console.log("hi")
+	// 		if (mappingList[i][0] != finalMappingList[i][0] && mappingList[i][1] != finalMappingList[i][1]){
+	// 			finalMappingList.push(mappingList[i]);
+	// 		}
+	// 	}
+	// }
+
+
+
+
+
 
 }
 calculateContours();
