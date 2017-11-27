@@ -46,6 +46,7 @@ var elevationMatrix = [];
 var elevationStepMatrix = [];
 var elevationStepData = [];
 var levelObjects = [];
+var masterIndex = 0;
 
 
 var matrixSize = tileLength * gridLength;
@@ -69,17 +70,34 @@ function calculateContours(){
 			});
 		}
 	}
-	
+
 	for (var i = 0; i < matrixSize; i++){
 		for (var j = 0; j< matrixSize; j++){
 			levelObjects[i][j] = {
 				index: 0,
 				elv: elevationStepMatrix[i][j]
 			};
-			if (j > 0 && elevationStepMatrix[i][j] != elevationStepMatrix[i][j-1]){
-				levelObjects[i][j].index = levelObjects[i][j-1].index + 1;
-			} else if (j > 0){
-				levelObjects[i][j].index = levelObjects[i][j-1].index;
+			if (i === 0){
+				if (j > 0 && elevationStepMatrix[i][j] != elevationStepMatrix[i][j-1]){
+					levelObjects[i][j].index = levelObjects[i][j-1].index + 1;
+				} else if (j > 0){
+					levelObjects[i][j].index = levelObjects[i][j-1].index;
+				} 
+				masterIndex = Math.max(masterIndex,levelObjects[i][j].index);
+			} else {
+
+				if (elevationStepMatrix[i][j] === elevationStepMatrix[i-1][j]){
+					levelObjects[i][j].index = levelObjects[i-1][j].index;
+				} else {
+					if (j > 0 && elevationStepMatrix[i][j] != elevationStepMatrix[i][j-1]){
+						levelObjects[i][j].index = masterIndex + 1;
+						masterIndex++;
+					} else if (j > 0){
+						levelObjects[i][j].index = levelObjects[i][j-1].index;
+					} else {				
+						levelObjects[i][0].index = levelObjects[i-1][matrixSize-1].index + 1;
+					}
+				}
 			}
 		}
 	}
