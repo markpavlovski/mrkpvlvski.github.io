@@ -32,12 +32,12 @@
  }
  function insult(){
    var insultArray = []
-   insultArray.push(["You ", animal(), ", you ", body(), ", you ", noun(), "!"]);
+   // insultArray.push(["You ", animal(), ", you ", body(), ", you ", noun(), "!"]);
    insultArray.push(["Your ", body(), " smells ", smell(), " and your ", fam(), " is quite a ", adj(), " ", animal(), "."]);
-   insultArray.push(["You're ", adv(), " and your ", fam(), " is a ", adj(), " ", noun(), "."]);
+   // insultArray.push(["You're ", adv(), " and your ", fam(), " is a ", adj(), " ", noun(), "."]);
    insultArray.push(["Your ", body(), " tastes ", taste(), ", like a ", smell(), " ", animal(), "."]);
    insultArray.push(["I ", hand(), " your ", body(), ", like a ", adj(), " ", animal(), "."]);
-   insultArray.push(["Your ",fam(), " smells ", smell(),", like a ", adv(), " ", body(), "."]);
+   // insultArray.push(["Your ",fam(), " smells ", smell(),", like a ", adv(), " ", body(), "."]);
    insultArray.push(["My ",body(), " smells better than your ", fam(), "!"]);
    insultArray.push(["Wild ",animal(), " will certainly ", hand(), " your ", fam(), "'s ", body(), " given the first opportunity."]);
    insultArray.push(["Stop eating all the ", taste(), " ", animal(), "s, you ", smell()," ", body(), "!"]);
