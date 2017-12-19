@@ -10,12 +10,17 @@ This is a simplified problem with only one non-background elevation
 // Step 1: Define Helper Classes and Functions;
 function randomInt(a,b){
 	if ( b === undefined ){
-		b = a;
-		a = 0;
+		if ( a === undefined){
+			b = 1;
+			a = 0;
+		} else {
+			b = a;
+			a = 0;
+		}
 	}
 	return a + Math.floor(Math.random()*(b +1 -a));
 }
-//console.log(randomInt(4,5));
+
 
 class Matrix {
 	constructor(rows, columns) {
@@ -38,10 +43,10 @@ class Matrix {
 		this.size = this.rows + "x" + this.columns;
 
 	}
-	setZero(){
+	setValue(val){
 		for (var i = 0; i < this.rows; i++){
 			for (var j = 0; j < this.columns; j++){
-				this.data[i][j] = 0;
+				this.data[i][j] = val;
 			}
 		}
 	}
@@ -50,38 +55,126 @@ class Matrix {
 			for (var j = 0; j < this.columns; j++){
 				this.data[i][j] = randomInt(k);
 			}
+		}
+	}
+	setZero(){
+		this.setValue(0);
+	}
+	setMax(){
+		this.setValue(Number.MAX_SAFE_INTEGER);
+	}
+	getMin(){
+		var min = Number.MAX_SAFE_INTEGER;
+		for (var i = 0; i < this.rows; i++){
+			for (var j = 0; j < this.columns; j++){
+				if (this.data[i][j] !== undefined && this.data[i][j] !== null){
+					min = Math.min(min, this.data[i][j]);
+				}
+			}
+		}
+		if( min === Number.MAX_SAFE_INTEGER ){
+			return null;
+		} else {
+			return min;
+		}
+	}
+}
+
+class LabelMatrix extends Matrix {
+	constructor(maxtrix){
+		super(matrix.rows, matrix.columns);
+		this.inputData = matrix.data;
+		this.buffer = new Matrix(3);
+		this.buffer.setMax();
+		this.parents = [];
+	}
+	setBuffer(k,l){
+		this.buffer.setMax();
+		for (var i = 0; i < 3; i++){
+			for (var j = 0; j < 3; j++){
+				if ( k-1+i >= 0 && k-1+i <= this.rows -1  && l-1+j >= 0 && l-1+j <= this.columns -1 ){
+					this.buffer.data[i][j] = this.data[k-1+i][l-1+j];
+				}
+			}
+		}
+	}
+	setLabels(){
+		for (var i = 0; i < this.rows; i++){
+			for (var j = 0; j < this.columns; j++){
+				if (this.inputData[i][j] === 1){
+					this.setBuffer(i,j);
+					if (this.buffer.getMin() === null){
+						this.data[i][j] = this.parents.length;
+						this.parents.push(this.parents.length);
+					} else {
+						this.data[i][j] = this.parents[this.buffer.getMin()];
+
+						for (var m = 0; m < 3; m++){
+							for (var n = 0; n < 3; n++){
+								if ( i-1+m >= 0 && i-1+m <= this.rows -1  && j-1+n >= 0 && j-1+n <= this.columns -1 && this.inputData[i-1+m][j-1+n] === 1 && this.data[i-1+m][j-1+n] !== null){
+									this.parents[this.data[i-1+m][j-1+n]] = this.buffer.getMin();
+									console.log(this.data[i-1+m][j-1+n]);
+									console.log( (i-1+m) + ",  "+ (j-1+n)+ ",  " + this.buffer.getMin());
+								}
+							}
+						}
+					}
+				}
+			}
 		}		
+	}
+	optimizeParents(){
+		for (var i=0; i < this.parents.length; i++){
+			while (this.parents[this.parents[i]] !== this.parents[i]){
+				this.parents[i] = this.parents[this.parents[i]];
+			}
+		}
+	}
+	relabelParents(){
+		var uniqueParents = [];
+		for (var i=0; i < this.parents.length; i++){
+			if(uniqueParents.indexOf(this.parents[i]) === -1){
+				uniqueParents.push(this.parents[i])
+			}
+		}
+		for (var i=0; i < this.parents.length; i++){
+			this.parents[i] = uniqueParents.indexOf(this.parents[i])
+		}
+		console.log(uniqueParents)
+	}
+	relabelMatrix(){
+		for (var i = 0; i < this.rows; i++){
+			for (var j = 0; j < this.columns; j++){
+				if (this.data[i][j] === null){
+					this.data[i][j] = 0;
+				} else {
+					this.data[i][j] = this.parents[this.data[i][j]]+1;
+				}
+			}
+		}
 	}
 
 }
-//console.log(matrix.data)
+
+
 
 // Step 2: Generate input matrix and define core data structures;
 
-var matrix = new Matrix(10,10);
+var matrix = new Matrix(40);
 matrix.setRandom(1);
-
-var labelMatrix = new Matrix(matrix.rows,matrix.columns);
-var neighbourLabelBuffer = new Matrix(3);
-
-var labels = [];
-var labelParents = [];
-
-var labelIndex = 0;
-
-
+var l = new LabelMatrix(matrix);
+l.setLabels();
+console.log(matrix.data);
+console.log(l.buffer.data);
+console.log(l.parents)
+console.log(l.data)
+// l.nullToX();
+// console.log(l.data);
 // Step 3: Set up core methods;
-
-getNeighbourLabels = function(matrix,k,l){
-	buffer = new Matrix(3);
-	for (var i = 0; i < 3; i++){
-		for (var j = 0; j < 3; j++){
-			buffer.data[i][j] = matrix.data[k-1+i][l-1+j];
-		}
-	}
-	buffer.data[1][1] = null;
-	return buffer.data;
-}
-
-console.log(matrix.data)
-console.log(getNeighbourLabels(matrix,1,1))
+console.log(l.parents)
+l.optimizeParents();
+console.log(l.parents)
+l.relabelParents();
+console.log(l.parents)
+l.relabelMatrix();
+console.log(l.data)
