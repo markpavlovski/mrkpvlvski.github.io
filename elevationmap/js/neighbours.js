@@ -80,7 +80,7 @@ class Matrix {
 	}
 }
 
-class LabelMatrix extends Matrix {
+class SingleLabelMatrix extends Matrix {
 	constructor(maxtrix){
 		super(matrix.rows, matrix.columns);
 		this.inputData = matrix.data;
@@ -113,8 +113,6 @@ class LabelMatrix extends Matrix {
 							for (var n = 0; n < 3; n++){
 								if ( i-1+m >= 0 && i-1+m <= this.rows -1  && j-1+n >= 0 && j-1+n <= this.columns -1 && this.inputData[i-1+m][j-1+n] === 1 && this.data[i-1+m][j-1+n] !== null){
 									this.parents[this.data[i-1+m][j-1+n]] = this.buffer.getMin();
-									console.log(this.data[i-1+m][j-1+n]);
-									console.log( (i-1+m) + ",  "+ (j-1+n)+ ",  " + this.buffer.getMin());
 								}
 							}
 						}
@@ -140,7 +138,6 @@ class LabelMatrix extends Matrix {
 		for (var i=0; i < this.parents.length; i++){
 			this.parents[i] = uniqueParents.indexOf(this.parents[i])
 		}
-		console.log(uniqueParents)
 	}
 	relabelMatrix(){
 		for (var i = 0; i < this.rows; i++){
@@ -154,27 +151,24 @@ class LabelMatrix extends Matrix {
 		}
 	}
 
+	// getLabels method consolidates all steps into one and generates final labeled matrix.
+	getLabels(){
+		this.setLabels();
+		this.optimizeParents();
+		this.relabelParents();
+		this.relabelMatrix();
+		var outputMatrix = new Matrix(this.rows,this.columns);
+		outputMatrix.data = this.data;
+		return outputMatrix;
+	}
+
 }
 
 
 
-// Step 2: Generate input matrix and define core data structures;
+// Step 2: Testing;
 
 var matrix = new Matrix(40);
 matrix.setRandom(1);
-var l = new LabelMatrix(matrix);
-l.setLabels();
-console.log(matrix.data);
-console.log(l.buffer.data);
-console.log(l.parents)
-console.log(l.data)
-// l.nullToX();
-// console.log(l.data);
-// Step 3: Set up core methods;
-console.log(l.parents)
-l.optimizeParents();
-console.log(l.parents)
-l.relabelParents();
-console.log(l.parents)
-l.relabelMatrix();
-console.log(l.data)
+var l = new SingleLabelMatrix(matrix);
+var z = l.getLabels();
