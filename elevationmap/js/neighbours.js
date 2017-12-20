@@ -20,6 +20,13 @@ function randomInt(a,b){
 	}
 	return a + Math.floor(Math.random()*(b +1 -a));
 }
+function conditionalIncludeFactor(prob){
+	if (Math.random() < prob){
+		return 1;
+	} else {
+		return 0;
+	}
+}
 
 
 class Matrix {
@@ -43,25 +50,28 @@ class Matrix {
 		this.size = this.rows + "x" + this.columns;
 
 	}
-	setValue(val){
+	setToValue(val){
 		for (var i = 0; i < this.rows; i++){
 			for (var j = 0; j < this.columns; j++){
 				this.data[i][j] = val;
 			}
 		}
 	}
-	setRandom(k){
+	setToRandom(k,prob){
+		if (prob === undefined){
+			prob = 1;
+		}
 		for (var i = 0; i < this.rows; i++){
 			for (var j = 0; j < this.columns; j++){
-				this.data[i][j] = randomInt(k);
+				this.data[i][j] = randomInt(k)*conditionalIncludeFactor(prob);
 			}
 		}
 	}
-	setZero(){
-		this.setValue(0);
+	setToZero(){
+		this.setToValue(0);
 	}
-	setMax(){
-		this.setValue(Number.MAX_SAFE_INTEGER);
+	setToMax(){
+		this.setToValue(Number.MAX_SAFE_INTEGER);
 	}
 	getMin(){
 		var min = Number.MAX_SAFE_INTEGER;
@@ -78,6 +88,21 @@ class Matrix {
 			return min;
 		}
 	}
+	getMax(){
+		var max = Number.MIN_SAFE_INTEGER;
+		for (var i = 0; i < this.rows; i++){
+			for (var j = 0; j < this.columns; j++){
+				if (this.data[i][j] !== undefined && this.data[i][j] !== null){
+					max = Math.max(max, this.data[i][j]);
+				}
+			}
+		}
+		if( max === Number.MIN_SAFE_INTEGER ){
+			return null;
+		} else {
+			return max;
+		}
+	}
 }
 
 class SingleLabelMatrix extends Matrix {
@@ -85,11 +110,11 @@ class SingleLabelMatrix extends Matrix {
 		super(matrix.rows, matrix.columns);
 		this.inputData = matrix.data;
 		this.buffer = new Matrix(3);
-		this.buffer.setMax();
+		this.buffer.setToMax();
 		this.parents = [];
 	}
 	setBuffer(k,l){
-		this.buffer.setMax();
+		this.buffer.setToMax();
 		for (var i = 0; i < 3; i++){
 			for (var j = 0; j < 3; j++){
 				if ( k-1+i >= 0 && k-1+i <= this.rows -1  && l-1+j >= 0 && l-1+j <= this.columns -1 ){
@@ -164,11 +189,53 @@ class SingleLabelMatrix extends Matrix {
 
 }
 
+class ShadedTable {
+	constructor(matrix, labelMatrix, cellSize, targetDivId) {
+		this.matrix = matrix;
+		this.labelMatrix = labelMatrix;
+		this.rows = matrix.rows;
+		this.columns = matrix.columns;
+		this.cellSize = cellSize;
+		this.targetDivId = targetDivId;
+		this.colorMatrix = new Matrix(matrix.rows,matrix.columns);
+		this.HTMLString = "";
+	}
+	assignColor(){
+		var max = this.matrix.getMax();
+		var min = this.matrix.getMin();
+		for (var i =0; i< this.rows; i++){
+			for (var j =0; j< this.columns; j++){
+				this.colorMatrix.data[i][j] = 255-100*this.matrix.data[i][j]/(max-min);		
+			}
+		}
+	}
+	render(){
+		this.assignColor();
+
+		for (var i =0; i< this.rows; i++){
+			for (var j =0; j< this.columns; j++){
+				console.log();
+				this.HTMLString += "<div class='cell' id = 'cell' style='width: "+ this.cellSize + "px; height: "+ this.cellSize + "px; background: RGB("+ this.colorMatrix.data[i][j] + ", " + this.colorMatrix.data[i][j] + ", " + this.colorMatrix.data[i][j] + ");'>"+this.labelMatrix.data[i][j]+"</div>"
+			}
+		}
+
+		var targetDiv = document.getElementById(this.targetDivId);
+		targetDiv.style.width = this.columns * this.cellSize;
+		targetDiv.innerHTML = this.HTMLString;
+	}
+}
+
+
+
 
 
 // Step 2: Testing;
 
-var matrix = new Matrix(40);
-matrix.setRandom(1);
+var matrix = new Matrix(15,20);
+matrix.setToRandom(1,0.8);
 var l = new SingleLabelMatrix(matrix);
 var z = l.getLabels();
+var x = new ShadedTable(matrix,z, 25, "display");
+x.render();
+
+/// Stil infrequent error in labels - most likely in the parent reassingnment process;
