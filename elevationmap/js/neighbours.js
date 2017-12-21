@@ -255,15 +255,12 @@ testData2 =
 [1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1]
 ]
 
-<<<<<<< HEAD
-var matrix = new Matrix(20,30);
-//matrix.data = testData2;
-matrix.setToRandom(1,.9)
-=======
+
+
 var matrix = new Matrix(20,20);
 matrix.data = testData2;
 //matrix.setToRandom(1,.9)
->>>>>>> 332a6b7ca7e26a5a52f17481decad75580ab36df
+
 var l = new SingleLabelMatrix(matrix);
 var z = l.getLabels();
 var x = new ShadedTable(matrix,z, 25, "display");
