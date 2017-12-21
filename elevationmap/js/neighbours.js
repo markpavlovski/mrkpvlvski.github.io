@@ -232,7 +232,7 @@ class ShadedTable {
 
 // Step 2: Testing;
 
-var matrix = new Matrix(20,20);
+var matrix = new Matrix(20,30);
 //matrix.data = testData2;
 matrix.setToRandom(1,.9)
 var l = new SingleLabelMatrix(matrix);
