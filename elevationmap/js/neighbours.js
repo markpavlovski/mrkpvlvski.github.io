@@ -1,4 +1,4 @@
-/* 
+/*
 Goal: Implement https://www.codeproject.com/Articles/336915/Connected-Component-Labeling-Algorithm
 use Union Find algorithm: http://www.cs.duke.edu/courses/cps100e/fall09/notes/UnionFind.pdf
 
@@ -138,14 +138,14 @@ class SingleLabelMatrix extends Matrix {
 						for (var m = 0; m < 3; m++){
 							for (var n = 0; n < 3; n++){
 								if ( i-1+m >= 0 && i-1+m <= this.rows -1  && j-1+n >= 0 && j-1+n <= this.columns -1 && this.inputData[i-1+m][j-1+n] === 1 && this.data[i-1+m][j-1+n] !== null){
-									this.parents[this.data[i-1+m][j-1+n]] = this.parents[this.buffer.getMin()]; 
+									this.parents[this.data[i-1+m][j-1+n]] = this.parents[this.buffer.getMin()];
 								}
 							}
 						}
 					}
 				}
 			}
-		}		
+		}
 	}
 	optimizeParents(){
 		for (var i=0; i < this.parents.length; i++){
@@ -180,8 +180,8 @@ class SingleLabelMatrix extends Matrix {
 	// getLabels method consolidates all steps into one and generates final labeled matrix.
 	getLabels(){
 		this.setLabels();
-		this.optimizeParents();
-		this.relabelParents();
+		//this.optimizeParents();
+		//this.relabelParents();
 		this.relabelMatrix();
 		var outputMatrix = new Matrix(this.rows,this.columns);
 		outputMatrix.data = this.data;
@@ -206,7 +206,7 @@ class ShadedTable {
 		var min = this.matrix.getMin();
 		for (var i =0; i< this.rows; i++){
 			for (var j =0; j< this.columns; j++){
-				this.colorMatrix.data[i][j] = 255-100*this.matrix.data[i][j]/(max-min);		
+				this.colorMatrix.data[i][j] = 255-100*this.matrix.data[i][j]/(max-min);
 			}
 		}
 	}
@@ -231,12 +231,40 @@ class ShadedTable {
 
 
 // Step 2: Testing;
+testData2 =
+[
+[1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0],
+[1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1],
+[1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0],
+[1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0],
+[0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1],
+[0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0],
+[1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+[1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1],
+[0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0],
+[1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1],
+[0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1],
+[0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0],
+[1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0],
+[0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0],
+[1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0],
+[1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1],
+[1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0],
+[0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0],
+[0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0],
+[1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1]
+]
 
+<<<<<<< HEAD
 var matrix = new Matrix(20,30);
 //matrix.data = testData2;
 matrix.setToRandom(1,.9)
+=======
+var matrix = new Matrix(20,20);
+matrix.data = testData2;
+//matrix.setToRandom(1,.9)
+>>>>>>> 332a6b7ca7e26a5a52f17481decad75580ab36df
 var l = new SingleLabelMatrix(matrix);
 var z = l.getLabels();
 var x = new ShadedTable(matrix,z, 25, "display");
 x.render();
-
