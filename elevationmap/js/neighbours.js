@@ -118,7 +118,7 @@ class SingleLabelMatrix extends Matrix {
 		for (var i = 0; i < 3; i++){
 			for (var j = 0; j < 3; j++){
 				if ( k-1+i >= 0 && k-1+i <= this.rows -1  && l-1+j >= 0 && l-1+j <= this.columns -1 ){
-					this.buffer.data[i][j] = this.data[k-1+i][l-1+j];
+					this.buffer.data[i][j] = this.parents[this.data[k-1+i][l-1+j]];
 				}
 			}
 		}
@@ -134,10 +134,11 @@ class SingleLabelMatrix extends Matrix {
 					} else {
 						this.data[i][j] = this.parents[this.buffer.getMin()];
 
+
 						for (var m = 0; m < 3; m++){
 							for (var n = 0; n < 3; n++){
 								if ( i-1+m >= 0 && i-1+m <= this.rows -1  && j-1+n >= 0 && j-1+n <= this.columns -1 && this.inputData[i-1+m][j-1+n] === 1 && this.data[i-1+m][j-1+n] !== null){
-									this.parents[this.data[i-1+m][j-1+n]] = this.buffer.getMin();
+									this.parents[this.data[i-1+m][j-1+n]] = this.parents[this.buffer.getMin()]; 
 								}
 							}
 						}
@@ -168,9 +169,9 @@ class SingleLabelMatrix extends Matrix {
 		for (var i = 0; i < this.rows; i++){
 			for (var j = 0; j < this.columns; j++){
 				if (this.data[i][j] === null){
-					this.data[i][j] = 0;
+					this.data[i][j] = "x";
 				} else {
-					this.data[i][j] = this.parents[this.data[i][j]]+1;
+					this.data[i][j] = this.parents[this.data[i][j]];
 				}
 			}
 		}
@@ -231,11 +232,11 @@ class ShadedTable {
 
 // Step 2: Testing;
 
-var matrix = new Matrix(15,20);
-matrix.setToRandom(1,0.8);
+var matrix = new Matrix(20,20);
+//matrix.data = testData2;
+matrix.setToRandom(1,.9)
 var l = new SingleLabelMatrix(matrix);
 var z = l.getLabels();
 var x = new ShadedTable(matrix,z, 25, "display");
 x.render();
 
-/// Stil infrequent error in labels - most likely in the parent reassingnment process;
