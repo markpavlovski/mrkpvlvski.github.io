@@ -117,44 +117,25 @@ class SingleLabelMatrix extends Matrix {
 		this.buffer.setToValue(null);
 		for (var i = 0; i < 3; i++){
 			for (var j = 0; j < 3; j++){
-					if( k === 8 && l === 17){
-						console.log((k-1+i) + ", " + (l-1+j) );
-					}
-				if ( k-1+i >= 0 && k-1+i <= this.rows -1  && l-1+j >= 0 && l-1+j <= this.columns -1 ){
+				if ( k-1+i >= 0 && k-1+i <= this.rows -1  && l-1+j >= 0 && l-1+j <= this.columns -1 && this.inputData[k-1+i][l-1+j] === 1){
 					this.buffer.data[i][j] = this.parents[this.data[k-1+i][l-1+j]];
-					if( k === 8 && l === 17){
-						console.log(this.parents[this.data[k-1+i][l-1+j]]);
-						console.log(this.buffer.data[i][j]);
-					}
-
+					this.buffer.data[1][1] = null;
 				}
 			}
 		}
 	}
 	setLabels(){
+		var log = document.getElementById("log");
 		for (var i = 0; i < this.rows; i++){
 			for (var j = 0; j < this.columns; j++){
+
 				if (this.inputData[i][j] === 1){
 					this.setBuffer(i,j);
-					if( i === 8 && j === 17){
-						console.log("setBuffer Step");
-						console.log(this.buffer.data);
-						console.log(this.parents);
-						console.log(this.buffer.getMin());
-
-					}
 					if (this.buffer.getMin() === null){
 						this.data[i][j] = this.parents.length;
 						this.parents.push(this.parents.length);
-						if( i === 8 && j === 17){
-							console.log("TRUE");
-						}
 					} else {
 						this.data[i][j] = this.parents[this.parents[this.buffer.getMin()]];
-						if( i === 8 && j === 17){
-							console.log("TRUE ALSO");
-						}
-
 						for (var m = 0; m < 3; m++){
 							for (var n = 0; n < 3; n++){
 								if ( i-1+m >= 0 && i-1+m <= this.rows -1  && j-1+n >= 0 && j-1+n <= this.columns -1 && this.inputData[i-1+m][j-1+n] === 1 && this.data[i-1+m][j-1+n] !== null){
@@ -163,7 +144,15 @@ class SingleLabelMatrix extends Matrix {
 							}
 						}
 					}
-				}
+
+					// Write to debugging log:
+					log.innerHTML += "("+ i + ", " + j +")<br>" +
+					this.buffer.data[0][0] + ", " + this.buffer.data[0][1] + ", "  + this.buffer.data[0][2] + "<br>" +
+					this.buffer.data[1][0] + ", " + this.buffer.data[1][1] + ", "  + this.buffer.data[1][2] + "<br>" +
+					this.buffer.data[2][0] + ", " + this.buffer.data[2][1] + ", "  + this.buffer.data[2][2] + "<br>" + 
+					this.buffer.getMin() +
+					"<br><br>";
+				} 
 			}
 		}
 	}
@@ -235,7 +224,6 @@ class ShadedTable {
 
 		for (var i =0; i< this.rows; i++){
 			for (var j =0; j< this.columns; j++){
-				console.log();
 				this.HTMLString += "<div class='cell' id = 'cell' style='width: "+ this.cellSize + "px; height: "+ this.cellSize + "px; background: RGB("+ this.colorMatrix.data[i][j] + ", " + this.colorMatrix.data[i][j] + ", " + this.colorMatrix.data[i][j] + ");'>"+this.labelMatrix.data[i][j]+"</div>"
 			}
 		}
