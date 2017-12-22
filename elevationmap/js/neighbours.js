@@ -110,15 +110,23 @@ class SingleLabelMatrix extends Matrix {
 		super(matrix.rows, matrix.columns);
 		this.inputData = matrix.data;
 		this.buffer = new Matrix(3);
-		this.buffer.setToMax();
+		this.buffer.setToValue(null);
 		this.parents = [];
 	}
 	setBuffer(k,l){
-		this.buffer.setToMax();
+		this.buffer.setToValue(null);
 		for (var i = 0; i < 3; i++){
 			for (var j = 0; j < 3; j++){
+					if( k === 8 && l === 17){
+						console.log((k-1+i) + ", " + (l-1+j) );
+					}
 				if ( k-1+i >= 0 && k-1+i <= this.rows -1  && l-1+j >= 0 && l-1+j <= this.columns -1 ){
 					this.buffer.data[i][j] = this.parents[this.data[k-1+i][l-1+j]];
+					if( k === 8 && l === 17){
+						console.log(this.parents[this.data[k-1+i][l-1+j]]);
+						console.log(this.buffer.data[i][j]);
+					}
+
 				}
 			}
 		}
@@ -128,17 +136,29 @@ class SingleLabelMatrix extends Matrix {
 			for (var j = 0; j < this.columns; j++){
 				if (this.inputData[i][j] === 1){
 					this.setBuffer(i,j);
+					if( i === 8 && j === 17){
+						console.log("setBuffer Step");
+						console.log(this.buffer.data);
+						console.log(this.parents);
+						console.log(this.buffer.getMin());
+
+					}
 					if (this.buffer.getMin() === null){
 						this.data[i][j] = this.parents.length;
 						this.parents.push(this.parents.length);
+						if( i === 8 && j === 17){
+							console.log("TRUE");
+						}
 					} else {
-						this.data[i][j] = this.parents[this.buffer.getMin()];
-
+						this.data[i][j] = this.parents[this.parents[this.buffer.getMin()]];
+						if( i === 8 && j === 17){
+							console.log("TRUE ALSO");
+						}
 
 						for (var m = 0; m < 3; m++){
 							for (var n = 0; n < 3; n++){
 								if ( i-1+m >= 0 && i-1+m <= this.rows -1  && j-1+n >= 0 && j-1+n <= this.columns -1 && this.inputData[i-1+m][j-1+n] === 1 && this.data[i-1+m][j-1+n] !== null){
-									this.parents[this.data[i-1+m][j-1+n]] = this.parents[this.buffer.getMin()];
+									this.parents[this.data[i-1+m][j-1+n]] = this.parents[this.parents[this.buffer.getMin()]];
 								}
 							}
 						}
@@ -180,7 +200,7 @@ class SingleLabelMatrix extends Matrix {
 	// getLabels method consolidates all steps into one and generates final labeled matrix.
 	getLabels(){
 		this.setLabels();
-		//this.optimizeParents();
+		this.optimizeParents();
 		//this.relabelParents();
 		this.relabelMatrix();
 		var outputMatrix = new Matrix(this.rows,this.columns);
