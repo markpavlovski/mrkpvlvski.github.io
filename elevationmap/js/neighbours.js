@@ -202,7 +202,8 @@ class MultiLabelMatrix extends Matrix {
 		this.inputData = matrix.data;
 		this.buffer = new Matrix(3);
 		this.parents = [];
-		this.layers = [];
+		this.layerData = [];
+		this.layerParents = [];
 	}
 	setBuffer(k,l,layer){
 		this.buffer.setToValue(null);
@@ -226,9 +227,11 @@ class MultiLabelMatrix extends Matrix {
 		}
 	}
 	setLabels(){
-		this.parents = [];
 		// Step 1 - Assing Initial Labels
-		for (var layer = 1; layer < 2; layer++){
+		for (var layer = 1; layer < 3; layer++){
+			this.parents = [];
+			this.setToValue(null);
+			console.log(layer);
 			for (var i = 0; i < this.rows; i++){
 				for (var j = 0; j < this.columns; j++){
 					if (this.inputData[i][j] >= layer){
@@ -250,32 +253,33 @@ class MultiLabelMatrix extends Matrix {
 					}
 				}
 			}
-		}
-		// Step 2 - Reassign Parents
-		for (var i=0; i < this.parents.length; i++){
-			while (this.parents[this.parents[i]] !== this.parents[i]){
-				this.parents[i] = this.parents[this.parents[i]];
+			// Step 2 - Reassign Parents
+			for (var i=0; i < this.parents.length; i++){
+				while (this.parents[this.parents[i]] !== this.parents[i]){
+					this.parents[i] = this.parents[this.parents[i]];
+				}
 			}
-		}
-		// Step 3 - Relabel Parents
-		var uniqueParents = [];
-		for (var i=0; i < this.parents.length; i++){
-			if(uniqueParents.indexOf(this.parents[i]) === -1){
-				uniqueParents.push(this.parents[i])
+			// Step 3 - Relabel Parents
+			var uniqueParents = [];
+			for (var i=0; i < this.parents.length; i++){
+				if(uniqueParents.indexOf(this.parents[i]) === -1){
+					uniqueParents.push(this.parents[i])
+				}
 			}
+			for (var i=0; i < this.parents.length; i++){
+				this.parents[i] = uniqueParents.indexOf(this.parents[i])
+			}
+			// Step 4 - Store Parents
+			this.layerParents.push(this.parents);
+			this.layerData.push(this.data);
 		}
-		for (var i=0; i < this.parents.length; i++){
-			this.parents[i] = uniqueParents.indexOf(this.parents[i])
-		}
-		// Step 4 - Store Parents
-		this.layers.push(this.parents);
 	}
 
-	relabelMatrix(){
+	relabelMatrix(layer){
 		for (var i = 0; i < this.rows; i++){
 			for (var j = 0; j < this.columns; j++){
-				if (this.data[i][j] === null){
-					this.data[i][j] = "x";
+				if (this.inputData[i][j] < layer){
+					this.data[i][j] = "-";
 				} else {
 					this.data[i][j] = this.parents[this.data[i][j]];
 				}
@@ -285,7 +289,7 @@ class MultiLabelMatrix extends Matrix {
 	// getLabels method consolidates all steps into one and generates final labeled matrix.
 	getLabels(){
 		this.setLabels();
-		this.relabelMatrix();
+		this.relabelMatrix(2);
 		var outputMatrix = new Matrix(this.rows,this.columns);
 		outputMatrix.data = this.data;
 		return outputMatrix;
@@ -331,9 +335,9 @@ class ShadedTable {
 
 
 var matrix = new Matrix(30,50);
-matrix.setToRandom(1,.9)
+matrix.setToRandom(2,.9)
 
-var labaled = new SingleLabelMatrix(matrix);
-var labelMatrix = labaled.getLabels();
+var labeled = new MultiLabelMatrix(matrix);
+var labelMatrix = labeled.getLabels();
 var displayMatrix = new ShadedTable(matrix,labelMatrix, 25, "display");
 displayMatrix.render();
