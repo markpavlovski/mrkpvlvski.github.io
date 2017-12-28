@@ -134,7 +134,7 @@ class SingleLabelMatrix extends Matrix {
 		}
 	}
 	setLabels(){
-		// var log = document.getElementById("log"); //used for debugging only
+		// Step 1 - Assign Initial Labels
 		for (var i = 0; i < this.rows; i++){
 			for (var j = 0; j < this.columns; j++){
 				if (this.inputData[i][j] === 1){
@@ -156,15 +156,13 @@ class SingleLabelMatrix extends Matrix {
 				}
 			}
 		}
-	}
-	optimizeParents(){
+		// Step 2 - Reassign Parents
 		for (var i=0; i < this.parents.length; i++){
 			while (this.parents[this.parents[i]] !== this.parents[i]){
 				this.parents[i] = this.parents[this.parents[i]];
 			}
 		}
-	}
-	relabelParents(){
+		// Step 3 - Relabel Parents
 		var uniqueParents = [];
 		for (var i=0; i < this.parents.length; i++){
 			if(uniqueParents.indexOf(this.parents[i]) === -1){
@@ -189,8 +187,7 @@ class SingleLabelMatrix extends Matrix {
 	// getLabels method consolidates all steps into one and generates final labeled matrix.
 	getLabels(){
 		this.setLabels();
-		this.optimizeParents();
-		this.relabelParents();
+		//this.relabelParents();
 		this.relabelMatrix();
 		var outputMatrix = new Matrix(this.rows,this.columns);
 		outputMatrix.data = this.data;
@@ -199,13 +196,13 @@ class SingleLabelMatrix extends Matrix {
 
 }
 
-
 class MultiLabelMatrix extends Matrix {
 	constructor(maxtrix){
 		super(matrix.rows, matrix.columns);
 		this.inputData = matrix.data;
 		this.buffer = new Matrix(3);
 		this.parents = [];
+		this.layers = [];
 	}
 	setBuffer(k,l,layer){
 		this.buffer.setToValue(null);
@@ -229,21 +226,24 @@ class MultiLabelMatrix extends Matrix {
 		}
 	}
 	setLabels(){
-		// var log = document.getElementById("log"); //used for debugging only
-		for (var i = 0; i < this.rows; i++){
-			for (var j = 0; j < this.columns; j++){
-				if (this.inputData[i][j] === 1){
-					this.setBuffer(i,j);
-					if (this.buffer.getMin() === null){
-						this.data[i][j] = this.parents.length;
-						this.parents.push(this.parents.length);
-					} else {
-						this.data[i][j] = this.parents[this.buffer.getMin()];
-						this.parents[this.data[i][j]] = this.parents[this.buffer.getMin()];
-						for (var m = 0; m < 3; m++){
-							for (var n = 0; n < 3; n++){
-								if ( this.isValidLocation(i-1+m, j-1+n) ){
-									this.parents[this.parents[this.data[i-1+m][j-1+n]]] = this.parents[this.buffer.getMin()];
+		this.parents = [];
+		// Step 1 - Assing Initial Labels
+		for (var layer = 1; layer < 2; layer++){
+			for (var i = 0; i < this.rows; i++){
+				for (var j = 0; j < this.columns; j++){
+					if (this.inputData[i][j] >= layer){
+						this.setBuffer(i,j,layer);
+						if (this.buffer.getMin() === null){
+							this.data[i][j] = this.parents.length;
+							this.parents.push(this.parents.length);
+						} else {
+							this.data[i][j] = this.parents[this.buffer.getMin()];
+							this.parents[this.data[i][j]] = this.parents[this.buffer.getMin()];
+							for (var m = 0; m < 3; m++){
+								for (var n = 0; n < 3; n++){
+									if ( this.isValidLocation(i-1+m, j-1+n, layer) ){
+										this.parents[this.parents[this.data[i-1+m][j-1+n]]] = this.parents[this.buffer.getMin()];
+									}
 								}
 							}
 						}
@@ -251,15 +251,13 @@ class MultiLabelMatrix extends Matrix {
 				}
 			}
 		}
-	}
-	optimizeParents(){
+		// Step 2 - Reassign Parents
 		for (var i=0; i < this.parents.length; i++){
 			while (this.parents[this.parents[i]] !== this.parents[i]){
 				this.parents[i] = this.parents[this.parents[i]];
 			}
 		}
-	}
-	relabelParents(){
+		// Step 3 - Relabel Parents
 		var uniqueParents = [];
 		for (var i=0; i < this.parents.length; i++){
 			if(uniqueParents.indexOf(this.parents[i]) === -1){
@@ -269,7 +267,10 @@ class MultiLabelMatrix extends Matrix {
 		for (var i=0; i < this.parents.length; i++){
 			this.parents[i] = uniqueParents.indexOf(this.parents[i])
 		}
+		// Step 4 - Store Parents
+		this.layers.push(this.parents);
 	}
+
 	relabelMatrix(){
 		for (var i = 0; i < this.rows; i++){
 			for (var j = 0; j < this.columns; j++){
@@ -284,8 +285,6 @@ class MultiLabelMatrix extends Matrix {
 	// getLabels method consolidates all steps into one and generates final labeled matrix.
 	getLabels(){
 		this.setLabels();
-		this.optimizeParents();
-		this.relabelParents();
 		this.relabelMatrix();
 		var outputMatrix = new Matrix(this.rows,this.columns);
 		outputMatrix.data = this.data;
