@@ -119,11 +119,20 @@ class SingleLabelMatrix extends Matrix {
 			for (var j = 0; j < 3; j++){
 				if ( k-1+i >= 0 && k-1+i <= this.rows -1  && l-1+j >= 0 && l-1+j <= this.columns -1 && this.inputData[k-1+i][l-1+j] === 1){
 					this.buffer.data[i][j] = this.parents[this.data[k-1+i][l-1+j]];
-					this.buffer.data[1][1] = null;
 				}
 			}
 		}
 	}
+
+	// Set labels Logic:
+	// 1. Set buffer to be parents of all nearby cells
+	// 2. If the min of the buffer is null
+	//		2.1 Set to a new label
+	//		2.2 Add that label to the parent list
+	// 3. If the min of the buffer is not null, for every discovered nearby element:
+	//		3.1 Set the current label to that min.
+	//		3.2 Set the parent of the current label to that min.
+
 	setLabels(){
 		var log = document.getElementById("log");
 		for (var i = 0; i < this.rows; i++){
@@ -131,6 +140,19 @@ class SingleLabelMatrix extends Matrix {
 
 				if (this.inputData[i][j] === 1){
 					this.setBuffer(i,j);
+
+							// Write to debugging log:
+							log.innerHTML += "("+ i + ", " + j +")<br>" +
+							"Buffer Before: <br>" +
+							this.buffer.data[0][0] + ", " + this.buffer.data[0][1] + ", "  + this.buffer.data[0][2] + "<br>" +
+							this.buffer.data[1][0] + ", " + this.buffer.data[1][1] + ", "  + this.buffer.data[1][2] + "<br>" +
+							this.buffer.data[2][0] + ", " + this.buffer.data[2][1] + ", "  + this.buffer.data[2][2] + "<br>" +
+							"Min Value: <br>" +
+							this.buffer.getMin()+
+							"<br>Parents: <br>" +
+							this.parents
+							;
+
 					if (this.buffer.getMin() === null){
 						this.data[i][j] = this.parents.length;
 						this.parents.push(this.parents.length);
@@ -139,20 +161,30 @@ class SingleLabelMatrix extends Matrix {
 						for (var m = 0; m < 3; m++){
 							for (var n = 0; n < 3; n++){
 								if ( i-1+m >= 0 && i-1+m <= this.rows -1  && j-1+n >= 0 && j-1+n <= this.columns -1 && this.inputData[i-1+m][j-1+n] === 1 && this.data[i-1+m][j-1+n] !== null){
+									log.innerHTML += "<br> Parent getting reassigned: <br>";
+									log.innerHTML += this.parents[this.data[i-1+m][j-1+n]] + "<br>";
 									this.parents[this.data[i-1+m][j-1+n]] = this.parents[this.parents[this.buffer.getMin()]];
 								}
 							}
 						}
 					}
 
-					// Write to debugging log:
-					log.innerHTML += "("+ i + ", " + j +")<br>" +
+					this.setBuffer(i,j);
+					log.innerHTML +=
+					"<br> This value: <br>" +
+					this.data[i][j] +
+					"<br> this parent: <br>" +
+					this.parents[this.data[i][j]] +
+					"<br> Buffer After: <br>" +
 					this.buffer.data[0][0] + ", " + this.buffer.data[0][1] + ", "  + this.buffer.data[0][2] + "<br>" +
 					this.buffer.data[1][0] + ", " + this.buffer.data[1][1] + ", "  + this.buffer.data[1][2] + "<br>" +
-					this.buffer.data[2][0] + ", " + this.buffer.data[2][1] + ", "  + this.buffer.data[2][2] + "<br>" + 
+					this.buffer.data[2][0] + ", " + this.buffer.data[2][1] + ", "  + this.buffer.data[2][2] + "<br>" +
+					"Min Value: <br>" +
 					this.buffer.getMin() +
+					"<br>New Parents: <br>" +
+					this.parents +
 					"<br><br>";
-				} 
+				}
 			}
 		}
 	}
