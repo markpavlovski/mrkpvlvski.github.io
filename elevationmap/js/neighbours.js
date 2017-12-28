@@ -77,7 +77,7 @@ class Matrix {
 		var min = Number.MAX_SAFE_INTEGER;
 		for (var i = 0; i < this.rows; i++){
 			for (var j = 0; j < this.columns; j++){
-				if (this.data[i][j] !== undefined && this.data[i][j] !== null){
+				if (this.data[i][j] !== undefined && this.data[i][j] !== null && !isNaN(this.data[i][j])){
 					min = Math.min(min, this.data[i][j]);
 				}
 			}
@@ -92,7 +92,7 @@ class Matrix {
 		var max = Number.MIN_SAFE_INTEGER;
 		for (var i = 0; i < this.rows; i++){
 			for (var j = 0; j < this.columns; j++){
-				if (this.data[i][j] !== undefined && this.data[i][j] !== null){
+				if (this.data[i][j] !== undefined && this.data[i][j] !== null && !isNaN(this.data[i][j])){
 					max = Math.max(max, this.data[i][j]);
 				}
 			}
@@ -123,67 +123,37 @@ class SingleLabelMatrix extends Matrix {
 			}
 		}
 	}
-
-	// Set labels Logic:
-	// 1. Set buffer to be parents of all nearby cells
-	// 2. If the min of the buffer is null
-	//		2.1 Set to a new label
-	//		2.2 Add that label to the parent list
-	// 3. If the min of the buffer is not null, for every discovered nearby element:
-	//		3.1 Set the current label to that min.
-	//		3.2 Set the parent of the current label to that min.
-
+	isValidLocation(i,j){
+		if ( i < 0 || j < 0 || i >= this.rows || j >= this.columns ){
+			return false;
+		} else if ( this.data[i][j] === null || this.data[i][j] === undefined ){
+			return false;
+		} else if ( this.inputData[i][j] !== 1){
+			return false;
+		} else {
+			return true;
+		}
+	}
 	setLabels(){
 		var log = document.getElementById("log");
 		for (var i = 0; i < this.rows; i++){
 			for (var j = 0; j < this.columns; j++){
-
 				if (this.inputData[i][j] === 1){
 					this.setBuffer(i,j);
-
-							// Write to debugging log:
-							log.innerHTML += "("+ i + ", " + j +")<br>" +
-							"Buffer Before: <br>" +
-							this.buffer.data[0][0] + ", " + this.buffer.data[0][1] + ", "  + this.buffer.data[0][2] + "<br>" +
-							this.buffer.data[1][0] + ", " + this.buffer.data[1][1] + ", "  + this.buffer.data[1][2] + "<br>" +
-							this.buffer.data[2][0] + ", " + this.buffer.data[2][1] + ", "  + this.buffer.data[2][2] + "<br>" +
-							"Min Value: <br>" +
-							this.buffer.getMin()+
-							"<br>Parents: <br>" +
-							this.parents
-							;
-
 					if (this.buffer.getMin() === null){
 						this.data[i][j] = this.parents.length;
 						this.parents.push(this.parents.length);
 					} else {
-						this.data[i][j] = this.parents[this.parents[this.buffer.getMin()]];
+						this.data[i][j] = this.parents[this.buffer.getMin()];
+						this.parents[this.data[i][j]] = this.parents[this.buffer.getMin()];
 						for (var m = 0; m < 3; m++){
 							for (var n = 0; n < 3; n++){
-								if ( i-1+m >= 0 && i-1+m <= this.rows -1  && j-1+n >= 0 && j-1+n <= this.columns -1 && this.inputData[i-1+m][j-1+n] === 1 && this.data[i-1+m][j-1+n] !== null){
-									log.innerHTML += "<br> Parent getting reassigned: <br>";
-									log.innerHTML += this.parents[this.data[i-1+m][j-1+n]] + "<br>";
-									this.parents[this.data[i-1+m][j-1+n]] = this.parents[this.parents[this.buffer.getMin()]];
+								if ( this.isValidLocation(i-1+m, j-1+n) ){
+									this.parents[this.parents[this.data[i-1+m][j-1+n]]] = this.parents[this.buffer.getMin()];
 								}
 							}
 						}
 					}
-
-					this.setBuffer(i,j);
-					log.innerHTML +=
-					"<br> This value: <br>" +
-					this.data[i][j] +
-					"<br> this parent: <br>" +
-					this.parents[this.data[i][j]] +
-					"<br> Buffer After: <br>" +
-					this.buffer.data[0][0] + ", " + this.buffer.data[0][1] + ", "  + this.buffer.data[0][2] + "<br>" +
-					this.buffer.data[1][0] + ", " + this.buffer.data[1][1] + ", "  + this.buffer.data[1][2] + "<br>" +
-					this.buffer.data[2][0] + ", " + this.buffer.data[2][1] + ", "  + this.buffer.data[2][2] + "<br>" +
-					"Min Value: <br>" +
-					this.buffer.getMin() +
-					"<br>New Parents: <br>" +
-					this.parents +
-					"<br><br>";
 				}
 			}
 		}
@@ -217,12 +187,11 @@ class SingleLabelMatrix extends Matrix {
 			}
 		}
 	}
-
 	// getLabels method consolidates all steps into one and generates final labeled matrix.
 	getLabels(){
 		this.setLabels();
 		this.optimizeParents();
-		//this.relabelParents();
+		this.relabelParents();
 		this.relabelMatrix();
 		var outputMatrix = new Matrix(this.rows,this.columns);
 		outputMatrix.data = this.data;
@@ -267,41 +236,10 @@ class ShadedTable {
 }
 
 
+var matrix = new Matrix(30,50);
+matrix.setToRandom(1,.9)
 
-
-
-// Step 2: Testing;
-testData2 =
-[
-[1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0],
-[1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1],
-[1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0],
-[1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0],
-[0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1],
-[0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0],
-[1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-[1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1],
-[0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0],
-[1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1],
-[0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1],
-[0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0],
-[1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0],
-[0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0],
-[1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0],
-[1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1],
-[1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0],
-[0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0],
-[0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0],
-[1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1]
-]
-
-
-
-var matrix = new Matrix(20,20);
-matrix.data = testData2;
-//matrix.setToRandom(1,.9)
-
-var l = new SingleLabelMatrix(matrix);
-var z = l.getLabels();
-var x = new ShadedTable(matrix,z, 25, "display");
-x.render();
+var labaled = new SingleLabelMatrix(matrix);
+var labelMatrix = labaled.getLabels();
+var displayMatrix = new ShadedTable(matrix,labelMatrix, 25, "display");
+displayMatrix.render();
