@@ -24,10 +24,10 @@
   <link rel="stylesheet" href="css/threejselements.css">
   <link rel="stylesheet" href="css/fontawesome/css/font-awesome.min.css">
 
-  
+
 
   <script src="js/threejs/three.min.js"></script>
-            
+
 
 </head>
 <body  style="overflow-x: hidden;">
@@ -41,9 +41,9 @@
 	  	<div id = "canvas"></div>
     </div>
 
-  
+
     <div class="row" id='headerRow'>
-    	<div class=".u-full-width">          
+    	<div class=".u-full-width">
 	      <script>
 	      	var minHeight = 100;
 	      	var maxHeight = 600;
@@ -59,19 +59,19 @@
 	      		}
 	      	}
 	      	var height = setHeight(window.innerHeight);
-	        
-	        
+
+
 	        var mouse = new THREE.Vector3()
 	        var scene = new THREE.Scene();
 	        scene.background = new THREE.Color( 0xffffff );
-	        
+
 	        var camera = new THREE.PerspectiveCamera(85, window.innerWidth/ height / pct, 1, 10000);
-	        camera.position.z = 850;  
+	        camera.position.z = 850;
 	        camera.position.y = 150;
 	        var renderer = new THREE.WebGLRenderer();
 	        renderer.setSize(window.innerWidth, height *pct);
-	        
-	        
+
+
 	        function onDocumentMouseMove(event) {
 	            event.preventDefault();
 	            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -112,18 +112,18 @@
 	    	}
 	    	generateGeometry();
 	    	document.getElementById("canvas").addEventListener("click", function(){ generateGeometry() });
-	    	 	
-			
+
+
 
 
 
 
 	        var cube = new THREE.Mesh(geometry, material);
 	        scene.add(cube);
-	              
+
 	        var y_axis = new THREE.Vector3(0, -1, 0);
 	      var z_axis = new THREE.Vector3(0, 0, -1);
-	          
+
 	        function render() {
 
 	          requestAnimationFrame(render);
@@ -138,19 +138,19 @@
 	          camera.updateProjectionMatrix();
 	          renderer.setSize(window.innerWidth, height*pct);
 	          renderer.render(scene, camera);
-	       
+
 	        };
 	        render();
 	      </script>
       </div>
     </div>
 
-    
+
     <div class="row">
       <div class="one-half column" style="margin-top: 0; padding-top: 0%;  ">
         <h4>Hello,</h4>
       </div>
-      <div class="one-half column" style="margin-top: 0; padding-top: 0%;  ">  
+      <div class="one-half column" style="margin-top: 0; padding-top: 0%;  ">
       </div>
     </div>
 
@@ -173,7 +173,7 @@
 	<p>Austin neutra migas aesthetic yuccie lyft beard tofu man bun woke fixie franzen succulents. Sustainable roof party keytar hoodie yr af. Scenester hoodie banjo, meh YOLO butcher affogato skateboard health goth VHS. XOXO activated charcoal post-ironic hella, cloud bread pitchfork flexitarian offal small batch PBR&B irony kogi sriracha pok pok kinfolk.</p>
 
 	<p>Small batch fashion axe skateboard banjo brooklyn. Cornhole jianbing tilde cronut viral unicorn af tumeric meditation vinyl deep v knausgaard. Listicle tilde chillwave snackwave 8-bit chicharrones try-hard photo booth cliche keytar sartorial. Distillery try-hard schlitz, whatever swag man bun gochujang twee humblebrag affogato pork belly you probably haven't heard of them. </p>
-	
+
 	<br />
 
 	<h5>Recent Projects:</h5>
@@ -188,7 +188,7 @@
     </div>
 
 	<h6><a href = "https://twitter.com/mrkpvlvski"><i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i></a></h6><br/><br/>
-    
+
   </div>
 
 <!-- End Document
