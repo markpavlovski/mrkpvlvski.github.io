@@ -1,3 +1,6 @@
 [submodule "projects/elevations"]
 	path = projects/elevations
 	url = https://github.com/mrkpvlvski/elevations
+[submodule "projects/insult-generator"]
+	path = projects/insult-generator
+	url = https://github.com/mrkpvlvski/insult-generator
