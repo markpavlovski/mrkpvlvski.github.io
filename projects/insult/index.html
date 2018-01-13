@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+    <style>
+      body {
+        /*background: linear-gradient(to bottom right, blue, pink);*/
+        background: linear-gradient(to bottom, #8b8 20%, #383);
+        height: 100%;
+        margin: 0;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+      }
+      .insult {
+        width: 60%;
+        padding: 0px;
+        margin: auto;
+        margin-top: 20%;
+        margin-bottom: 10%;
+        font-family: 'Ubuntu', sans-serif;
+        font-size: 2.8em;
+        text-align: center;
+        font-weight: 900;
+        height: auto;
+        color: white;
+      }
+      .button {
+        width: 20%;
+        height: 2em;
+        border-style: solid;
+        border-radius: 1em;
+        border-color: rgba(255, 255, 255, 0.4);
+        border-width: .1em;
+        padding: 1em;
+        margin-top: 5%;
+        margin: auto;
+        margin-bottom: 5%;
+        font-family: 'Ubuntu', sans-serif;
+        font-size: 1em;
+        text-align: center;
+        font-weight: 10;
+        height: auto;
+        color: white;
+        background-color: rgba(255, 255, 255, 0.1);
+        user-select: none;
+      }
+      .button:hover{
+        background-color: rgba(255, 255, 255, 0.15);
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id = "insult" class = "insult"></div>
+    <div class = "button" id = "button">WHAT DID YOU JUST SAY?</div>
+
+    <script src = 'main.js'></script>
+  </body>
+</html>
