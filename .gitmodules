@@ -7,3 +7,6 @@
 [submodule "projects/platonic-solids"]
 	path = projects/platonic-solids
 	url = https://github.com/mrkpvlvski/platonic-solids
+[submodule "projects/snaky-snake"]
+	path = projects/snaky-snake
+	url = https://github.com/mrkpvlvski/snaky-snake
