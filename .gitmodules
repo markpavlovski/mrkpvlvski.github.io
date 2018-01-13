@@ -4,3 +4,6 @@
 [submodule "projects/insult-generator"]
 	path = projects/insult-generator
 	url = https://github.com/mrkpvlvski/insult-generator
+[submodule "projects/platonic-solids"]
+	path = projects/platonic-solids
+	url = https://github.com/mrkpvlvski/platonic-solids
