@@ -1,0 +1,40 @@
+.nav-wrapper img {
+  height: 80px;
+  margin: 10px 30px;
+
+}
+.nav-wrapper li {
+  text-transform: uppercase;
+}
+
+
+
+.nav-wrapper {
+  background-color: #1c1c1c
+}
+
+nav ul a:hover {
+  background-color: #302c2c;
+}
+
+nav ul {
+  margin: 0px 30px;
+}
+
+@media only screen and (min-width: 720px) {
+  .hide-on-med-and-up-custom {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width:992px) and (min-width:720px) {
+  .hide-on-med-custom {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 719px) {
+  .hide-on-sm-custom {
+    display: none !important;
+  }
+}
