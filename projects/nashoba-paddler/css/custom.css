@@ -19,19 +19,14 @@ nav ul {
   margin: 0px 30px;
 }
 
-@media only screen and (min-width: 720px) {
-  .hide-on-med-and-up-custom {
-    display: none !important;
-  }
-}
 
-@media only screen and (max-width:992px) and (min-width:720px) {
+@media only screen and (max-width:850px) and (min-width:740px) {
   .hide-on-med-custom {
     display: none !important;
   }
 }
 
-@media only screen and (max-width: 719px) {
+@media only screen and (max-width: 739px) {
   .hide-on-sm-custom {
     display: none !important;
   }
