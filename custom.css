@@ -78,7 +78,7 @@ header {
 
 main {
   display: flex;
-  height: 200vh;
+  height: 180vh;
   background-color: rgba(255,255,255,1);
 }
 
